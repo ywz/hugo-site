@@ -1,0 +1,5 @@
+baseURL = "http://oo8a.com/"
+languageCode = "en-us"
+title = "oo8a"
+theme = "smol"
+publishDir = "docs"

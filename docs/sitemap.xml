@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>http://oo8a.com/about/</loc>
+    <lastmod>2020-06-12T22:53:22+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://oo8a.com/tags/java/</loc>
+    <lastmod>2020-06-12T22:40:23+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://oo8a.com/tags/linux/</loc>
+    <lastmod>2020-06-12T22:40:23+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://oo8a.com/</loc>
+    <lastmod>2020-06-12T22:40:23+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://oo8a.com/posts/</loc>
+    <lastmod>2020-06-12T22:40:23+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://oo8a.com/tags/proxy/</loc>
+    <lastmod>2020-06-12T22:40:23+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://oo8a.com/tags/</loc>
+    <lastmod>2020-06-12T22:40:23+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://oo8a.com/tags/ubuntu/</loc>
+    <lastmod>2020-06-12T22:40:23+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://oo8a.com/posts/config_ubuntu_2004/</loc>
+    <lastmod>2020-06-12T22:40:23+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://oo8a.com/posts/hello_world/</loc>
+    <lastmod>2020-06-12T21:57:39+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://oo8a.com/categories/</loc>
+  </url>
+  
+</urlset>

@@ -4,14 +4,12 @@ date: 2020-06-12T22:40:23+08:00
 tags: [ubuntu,linux,proxy,java]
 ---
 
-<!--
 ![配置 ubuntu](/posts/images/sai-kiran-anagani-Tjbk79TARiE-unsplash.jpg)
--->
 Win10 下的测试环境，通过 VMware 安装 [Ubuntu Server](https://ubuntu.com/download/server)，安装过程略。
 
 <!--more-->
-## 静态IP
-```
+### 静态IP
+``` shell
 $ cd /etc/netplan
 $ sudo vim 00-installer-config.yaml
 --- 
@@ -30,28 +28,28 @@ network:
 $ sudo netplan apply
 ```
 
-## ssh
-```
+### ssh
+``` shell
 $ sudo systemctl enable ssh
 $ sudo systemctl start ssh
 ```
 
-## 配置 apt
+### 配置 apt
 https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/
 
-## 升级 
-```
+### 升级 
+``` shell
 $ sudo apt update
 $ sudo apt upgrade
 ```
 
-## 安装软件
-```
+### 安装软件
+``` shell
 $ sudo apt install vim zsh tmux mlocate git htop
 ```
 
-## 代理
-```
+### 代理
+``` shell
 $ sudo apt install proxychains-ng
 $ sudo vim /etc/proxychains4.conf
 ---
@@ -64,8 +62,8 @@ $ vim ~/.zshrc
 $ pr curl google.com
 ```
 
-## oh-my-zsh
-```
+### oh-my-zsh
+``` shell
 $ vim ~/.zshrc
 ---
 + ZSH_THEME="eastwood"
@@ -74,8 +72,8 @@ $ vim ~/.zshrc
 + alias pr='proxychains4'
 ```
 
-## vim
-```
+### vim
+``` shell
 $ vim ~/.vimrc
 ---
 set encoding=utf-8
@@ -101,8 +99,8 @@ let mapleader = ' '
 :nnoremap <leader>rc :e ~/.vimrc<cr>
 ```
 
-## java
-```
+### java
+``` shell
 $ sudo dpkg -i jdk-11.0.7_linux-x64_bin.deb
 $ vim ~/.zshrc
 $ sudo vim /etc/profile

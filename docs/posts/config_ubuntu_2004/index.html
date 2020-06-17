@@ -1,155 +1,230 @@
 <!DOCTYPE html>
 <html lang="en-us">
+
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<style type=text/css>body{font-family:monospace;}</style>
-	<title>配置 ubuntu 20.04</title>
-	
-	
-	<link rel="stylesheet" href="/css/style.css">
-	
+  <meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+  
+    <meta name="description" content="
+Win10 下的测试环境，通过 VMware 安装 Ubuntu Server，安装过程略。">
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.72.0" />
+  <title>配置 ubuntu 20.04 | oo8a</title>
+  <link rel="canonical" href="/posts/config_ubuntu_2004/">
+
+
+  
+
+
+
+
+
+
+
+
+  
+    
+  
+  
+  <link rel="stylesheet" href="/css/base.min.a703c8383c4977acca30e12e2e03a1a067afc6f95ea728130874fdc840e9c4a0.css" integrity="sha256-pwPIODxJd6zKMOEuLgOhoGevxvlepygTCHT9yEDpxKA=" crossorigin="anonymous">
+
+
+
 </head>
+
 <body>
-	<header>
-	==========<br>
-	== <a href="http://oo8a.com/">oo8a</a> ==<br>
-	==========
-	<div style="float: right;"></div><br>
-	<p>
-	<nav>
-			<a href="/"><b>root</b></a>.
-			
+  <nav class="u-background">
+  <div class="u-wrapper">
+    <ul class="Banner">
+      <li class="Banner-item Banner-item--title">
+        <a class="Banner-link u-clickable" href="/">oo8a</a>
+      </li>
+      
+        <li class="Banner-item">
+          <a class="Banner-link u-clickable" href="/about/">about</a>
+        </li>
+      
+        <li class="Banner-item">
+          <a class="Banner-link u-clickable" href="/post/">posts</a>
+        </li>
+      
+        <li class="Banner-item">
+          <a class="Banner-link u-clickable" href="/tags/">tags</a>
+        </li>
+      
+        <li class="Banner-item">
+          <a class="Banner-link u-clickable" href="/index.xml">rss</a>
+        </li>
+      
+    </ul>
+  </div>
+</nav>
+  <main>
+    <div class="u-wrapper">
+      <div class="u-padding">
+        
+
+  <article>
+    <header class="Heading">
+  <h2 class="Heading-title">
+    <a class="Heading-link u-clickable" href="/posts/config_ubuntu_2004/" rel="bookmark">配置 ubuntu 20.04</a>
+  </h2>
+  
+    <time datetime="2020-06-12T22:40:23&#43;08:00">12 June, 2020</time>
+  
 </header>
-
-	
-	<main>
-		<article>
-			<h1>配置 ubuntu 20.04</h1>
-			<b><time>12.06.2020 22:40</time></b>
-		       
-		           <a href="/tags/ubuntu">ubuntu</a>
-        	       
-		           <a href="/tags/linux">linux</a>
-        	       
-		           <a href="/tags/proxy">proxy</a>
-        	       
-		           <a href="/tags/java">java</a>
-        	       
-
-			<div>
-				<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p>Win10 下的测试环境，通过 VMware 安装 <a href="https://ubuntu.com/download/server">Ubuntu Server</a>，安装过程略。</p>
-<h2 id="静态ip">静态IP</h2>
-<pre><code>$ cd /etc/netplan
+    <p><img src="/posts/images/sai-kiran-anagani-Tjbk79TARiE-unsplash.jpg" alt="配置 ubuntu">
+Win10 下的测试环境，通过 VMware 安装 <a href="https://ubuntu.com/download/server">Ubuntu Server</a>，安装过程略。</p>
+<h3 id="静态ip">静态IP</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ cd /etc/netplan
 $ sudo vim 00-installer-config.yaml
 --- 
-# This is the network config written by 'subiquity'
+<span style="color:#75715e"># This is the network config written by &#39;subiquity&#39;</span>
 network:
   ethernets:
     ens33:
       dhcp4: no
-      addresses: [192.168.217.133/24]
+      addresses: <span style="color:#f92672">[</span>192.168.217.133/24<span style="color:#f92672">]</span>
       optional: true
       gateway4: 192.168.217.2
       nameservers:
-              addresses: [192.168.217.2]
-  version: 2
+              addresses: <span style="color:#f92672">[</span>192.168.217.2<span style="color:#f92672">]</span>
+  version: <span style="color:#ae81ff">2</span>
 ---
 $ sudo netplan apply
-</code></pre><h2 id="ssh">ssh</h2>
-<pre><code>$ sudo systemctl enable ssh
+</code></pre></div><h3 id="ssh">ssh</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ sudo systemctl enable ssh
 $ sudo systemctl start ssh
-</code></pre><h2 id="配置-apt">配置 apt</h2>
+</code></pre></div><h3 id="配置-apt">配置 apt</h3>
 <p><a href="https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/">https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/</a></p>
-<h2 id="升级">升级</h2>
-<pre><code>$ sudo apt update
+<h3 id="升级">升级</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ sudo apt update
 $ sudo apt upgrade
-</code></pre><h2 id="安装软件">安装软件</h2>
-<pre><code>$ sudo apt install vim zsh tmux mlocate git htop
-</code></pre><h2 id="代理">代理</h2>
-<pre><code>$ sudo apt install proxychains-ng
+</code></pre></div><h3 id="安装软件">安装软件</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ sudo apt install vim zsh tmux mlocate git htop
+</code></pre></div><h3 id="代理">代理</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ sudo apt install proxychains-ng
 $ sudo vim /etc/proxychains4.conf
 ---
-+ http    192.168.1.3 8001
++ http    192.168.1.3 <span style="color:#ae81ff">8001</span>
 ---
 $ vim ~/.zshrc
 ---
-+ alias pr='proxychains4'
++ alias pr<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;proxychains4&#39;</span>
 ---
 $ pr curl google.com
-</code></pre><h2 id="oh-my-zsh">oh-my-zsh</h2>
-<pre><code>$ vim ~/.zshrc
+</code></pre></div><h3 id="oh-my-zsh">oh-my-zsh</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ vim ~/.zshrc
 ---
-+ ZSH_THEME=&quot;eastwood&quot;
-+ alias zshconfig=&quot;vim ~/.zshrc&quot;
-+ alias ll='ls -alh'
-+ alias pr='proxychains4'
-</code></pre><h2 id="vim">vim</h2>
-<pre><code>$ vim ~/.vimrc
++ ZSH_THEME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;eastwood&#34;</span>
++ alias zshconfig<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;vim ~/.zshrc&#34;</span>
++ alias ll<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;ls -alh&#39;</span>
++ alias pr<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;proxychains4&#39;</span>
+</code></pre></div><h3 id="vim">vim</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ vim ~/.vimrc
 ---
-set encoding=utf-8
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
-&quot;set laststatus=2
-set showmatch
-set autoindent
-set incsearch
-set ignorecase
-set hlsearch
-set number
-set ruler
+set encoding<span style="color:#f92672">=</span>utf-8
+set tabstop<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>
+set softtabstop<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>
+set shiftwidth<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>
+<span style="color:#e6db74">&#34;set laststatus=2
+</span><span style="color:#e6db74">set showmatch
+</span><span style="color:#e6db74">set autoindent
+</span><span style="color:#e6db74">set incsearch
+</span><span style="color:#e6db74">set ignorecase
+</span><span style="color:#e6db74">set hlsearch
+</span><span style="color:#e6db74">set number
+</span><span style="color:#e6db74">set ruler
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">syntax on
+</span><span style="color:#e6db74">filetype on
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">&#34;</span> leader
+let mapleader <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39; &#39;</span>
 
-syntax on
-filetype on
-
-&quot; leader
-let mapleader = ' '
-
-&quot; edit vimrc
-:nnoremap &lt;leader&gt;rc :e ~/.vimrc&lt;cr&gt;
-</code></pre><h2 id="java">java</h2>
-<pre><code>$ sudo dpkg -i jdk-11.0.7_linux-x64_bin.deb
+<span style="color:#e6db74">&#34; edit vimrc
+</span><span style="color:#e6db74">:nnoremap &lt;leader&gt;rc :e ~/.vimrc&lt;cr&gt;
+</span></code></pre></div><h3 id="java">java</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ sudo dpkg -i jdk-11.0.7_linux-x64_bin.deb
 $ vim ~/.zshrc
 $ sudo vim /etc/profile
 ---
-export JAVA_HOME=/usr/lib/jvm/jdk-11.0.7/
-export PATH=$JAVA_HOME/bin:$PATH
-export CLASSPATH=$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+export JAVA_HOME<span style="color:#f92672">=</span>/usr/lib/jvm/jdk-11.0.7/
+export PATH<span style="color:#f92672">=</span>$JAVA_HOME/bin:$PATH
+export CLASSPATH<span style="color:#f92672">=</span>$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
 export JAVA_HOME PATH CLASSPATH
 ---
 $ source ~/.zshrc
 $ java -version
-</code></pre><p>创建快照，用吧。</p>
-			</div>
-		</article>
-	</main>
-<aside>
-	<div>
-		<div>
-			<h3>LATEST POSTS</h3>
-		</div>
-		<div>
-			<ul>
-				
-				<li><a href="/posts/config_ubuntu_2004/">配置 ubuntu 20.04</a></li>
-				
-				<li><a href="/posts/hello_world/">Hello World</a></li>
-				
-			</ul>
-		</div>
-	</div>
-</aside>
+</code></pre></div><p>创建快照，用吧。</p>
+    
 
 
-	<footer>
-	<p>&copy; 2020 <a href="http://oo8a.com/"><b>oo8a</b></a>.
-	</p>
-	<p>本作品采用<a rel="license" href="http://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>进行许可。</p>
-</footer>
+  
+
+  
+
+
+
+
+
+  <footer>
+    
+      
+    
+      
+        <ul class="Tags">
+          
+            <li class="Tags-item u-background">
+              <a class="Tags-link u-clickable" href="/tags/java/" rel="tag">java</a>
+            </li>
+          
+            <li class="Tags-item u-background">
+              <a class="Tags-link u-clickable" href="/tags/linux/" rel="tag">linux</a>
+            </li>
+          
+            <li class="Tags-item u-background">
+              <a class="Tags-link u-clickable" href="/tags/proxy/" rel="tag">proxy</a>
+            </li>
+          
+            <li class="Tags-item u-background">
+              <a class="Tags-link u-clickable" href="/tags/ubuntu/" rel="tag">ubuntu</a>
+            </li>
+          
+        </ul>
+      
+    
+  </footer>
+
+    
+  
+
+  </article>
+
+
+      </div>
+    </div>
+  </main>
+  
+  <footer class="Footer">
+    <div class="u-wrapper">
+      <div class="u-padding">
+        <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>进行许可。
+      </div>
+    </div>
+  </footer>
 
 </body>
+
 </html>

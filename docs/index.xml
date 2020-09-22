@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<?xml-stylesheet type="text/xsl" href="http://oo8a.com/xml/base.min.xml" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>oo8a</title>
@@ -8,104 +7,37 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 12 Jun 2020 22:40:23 +0800</lastBuildDate>
-    <atom:link href="http://oo8a.com/index.xml" rel="self" type="application/rss+xml" />
+    
+	<atom:link href="http://oo8a.com/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>about</title>
+      <link>http://oo8a.com/about/</link>
+      <pubDate>Fri, 12 Jun 2020 22:53:22 +0800</pubDate>
+      
+      <guid>http://oo8a.com/about/</guid>
+      <description>about</description>
+    </item>
+    
     <item>
       <title>配置 ubuntu 20.04</title>
       <link>http://oo8a.com/posts/config_ubuntu_2004/</link>
       <pubDate>Fri, 12 Jun 2020 22:40:23 +0800</pubDate>
+      
       <guid>http://oo8a.com/posts/config_ubuntu_2004/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;http://oo8a.com/posts/images/sai-kiran-anagani-Tjbk79TARiE-unsplash.jpg&#34; alt=&#34;配置 ubuntu&#34;&gt;
-Win10 下的测试环境，通过 VMware 安装 &lt;a href=&#34;https://ubuntu.com/download/server&#34;&gt;Ubuntu Server&lt;/a&gt;，安装过程略。&lt;/p&gt;
-&lt;h3 id=&#34;静态ip&#34;&gt;静态IP&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;$ cd /etc/netplan
-$ sudo vim 00-installer-config.yaml
---- 
-&lt;span style=&#34;color:#75715e&#34;&gt;# This is the network config written by &amp;#39;subiquity&amp;#39;&lt;/span&gt;
-network:
-  ethernets:
-    ens33:
-      dhcp4: no
-      addresses: &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;192.168.217.133/24&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
-      optional: true
-      gateway4: 192.168.217.2
-      nameservers:
-              addresses: &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;192.168.217.2&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
-  version: &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;
----
-$ sudo netplan apply
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;ssh&#34;&gt;ssh&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;$ sudo systemctl enable ssh
-$ sudo systemctl start ssh
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;配置-apt&#34;&gt;配置 apt&lt;/h3&gt;
-&lt;p&gt;&lt;a href=&#34;https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/&#34;&gt;https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/&lt;/a&gt;&lt;/p&gt;
-&lt;h3 id=&#34;升级&#34;&gt;升级&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;$ sudo apt update
-$ sudo apt upgrade
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;安装软件&#34;&gt;安装软件&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;$ sudo apt install vim zsh tmux mlocate git htop
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;代理&#34;&gt;代理&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;$ sudo apt install proxychains-ng
-$ sudo vim /etc/proxychains4.conf
----
-+ http    192.168.1.3 &lt;span style=&#34;color:#ae81ff&#34;&gt;8001&lt;/span&gt;
----
-$ vim ~/.zshrc
----
-+ alias pr&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;proxychains4&amp;#39;&lt;/span&gt;
----
-$ pr curl google.com
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;oh-my-zsh&#34;&gt;oh-my-zsh&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;$ vim ~/.zshrc
----
-+ ZSH_THEME&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;eastwood&amp;#34;&lt;/span&gt;
-+ alias zshconfig&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;vim ~/.zshrc&amp;#34;&lt;/span&gt;
-+ alias ll&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ls -alh&amp;#39;&lt;/span&gt;
-+ alias pr&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;proxychains4&amp;#39;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;vim&#34;&gt;vim&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;$ vim ~/.vimrc
----
-set encoding&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;utf-8
-set tabstop&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;
-set softtabstop&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;
-set shiftwidth&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;
-&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;set laststatus=2
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;set showmatch
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;set autoindent
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;set incsearch
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;set ignorecase
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;set hlsearch
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;set number
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;set ruler
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;syntax on
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;filetype on
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt; leader
-let mapleader &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39; &amp;#39;&lt;/span&gt;
-
-&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; edit vimrc
-&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;:nnoremap &amp;lt;leader&amp;gt;rc :e ~/.vimrc&amp;lt;cr&amp;gt;
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;java&#34;&gt;java&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;$ sudo dpkg -i jdk-11.0.7_linux-x64_bin.deb
-$ vim ~/.zshrc
-$ sudo vim /etc/profile
----
-export JAVA_HOME&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;/usr/lib/jvm/jdk-11.0.7/
-export PATH&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;$JAVA_HOME/bin:$PATH
-export CLASSPATH&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
-export JAVA_HOME PATH CLASSPATH
----
-$ source ~/.zshrc
-$ java -version
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;创建快照，用吧。&lt;/p&gt;</description>
+Win10 下的测试环境，通过 VMware 安装 &lt;a href=&#34;https://ubuntu.com/download/server&#34;&gt;Ubuntu Server&lt;/a&gt;，安装过程略。&lt;/p&gt;</description>
     </item>
+    
     <item>
       <title>Hello World</title>
       <link>http://oo8a.com/posts/hello_world/</link>
       <pubDate>Fri, 12 Jun 2020 21:57:39 +0800</pubDate>
+      
       <guid>http://oo8a.com/posts/hello_world/</guid>
-      <description>&lt;p&gt;你好，世界！&lt;/p&gt;
-</description>
+      <description>你好，世界！</description>
     </item>
+    
   </channel>
 </rss>

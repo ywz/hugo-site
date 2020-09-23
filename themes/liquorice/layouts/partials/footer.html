@@ -6,7 +6,11 @@
                     {{ with .Site.Params.copyright }}{{.}}{{ else }}&copy; {{ now.Format "2006"}}. All rights reserved. {{end}}
                 </div>
                 <div class="li-page-footer-theme">
-                    <span class=""><a href="https://github.com/eliasson/liquorice/">liquorice</a> is a theme for <a href="https://gohugo.io">hugo</a></span>
+                    <!--
+						<span class=""><a href="https://github.com/eliasson/liquorice/">liquorice</a> is a theme for <a href="https://gohugo.io">hugo</a></span>
+					<span class=""><a href="{{ .Site.BaseURL}}/index.xml">rss feed</a></span>
+					-->
+					<span class="">本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可。</span>
                 </div>
             </div>
         </div>

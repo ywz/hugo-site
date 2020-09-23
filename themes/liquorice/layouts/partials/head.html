@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="{{ .Site.BaseURL }}/libraries/normalize.3.0.1.css" />
         <link rel="stylesheet" href="{{ .Site.BaseURL }}/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="alternate" type="application/rss+xml" href="{{ .Site.BaseURL }}/index.xml" title="{{ .Site.Title}}">
         <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-144-precomposed.png" sizes="144x144" />
         {{ range .AlternativeOutputFormats -}}
             {{ printf `<link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}

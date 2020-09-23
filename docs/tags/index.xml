@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on oo8a</title>
+    <link>http://oo8a.com/tags/</link>
+    <description>Recent content in Tags on oo8a</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 12 Jun 2020 22:40:23 +0800</lastBuildDate>
+    
+	<atom:link href="http://oo8a.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>java</title>
+      <link>http://oo8a.com/tags/java/</link>
+      <pubDate>Fri, 12 Jun 2020 22:40:23 +0800</pubDate>
+      
+      <guid>http://oo8a.com/tags/java/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>linux</title>
+      <link>http://oo8a.com/tags/linux/</link>
+      <pubDate>Fri, 12 Jun 2020 22:40:23 +0800</pubDate>
+      
+      <guid>http://oo8a.com/tags/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>proxy</title>
+      <link>http://oo8a.com/tags/proxy/</link>
+      <pubDate>Fri, 12 Jun 2020 22:40:23 +0800</pubDate>
+      
+      <guid>http://oo8a.com/tags/proxy/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ubuntu</title>
+      <link>http://oo8a.com/tags/ubuntu/</link>
+      <pubDate>Fri, 12 Jun 2020 22:40:23 +0800</pubDate>
+      
+      <guid>http://oo8a.com/tags/ubuntu/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

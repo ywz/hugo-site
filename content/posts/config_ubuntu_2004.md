@@ -4,8 +4,9 @@ date: 2020-06-12T22:40:23+08:00
 tags: [ubuntu,linux,proxy,java]
 ---
 
-![配置 ubuntu](/posts/images/sai-kiran-anagani-Tjbk79TARiE-unsplash.jpg)
 Win10 下的测试环境，通过 VMware 安装 [Ubuntu Server](https://ubuntu.com/download/server)，安装过程略。
+
+![配置 ubuntu](/posts/images/2020-09-23_220019.png)
 
 <!--more-->
 ### 静态IP

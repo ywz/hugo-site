@@ -28,9 +28,12 @@ body {
     color: #484644;
 }
 
-p {
+p,
+code {
     line-height: 1.6;
 }
+
+
 
 a,
 a:active,

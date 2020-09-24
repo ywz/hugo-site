@@ -28,6 +28,10 @@ body {
     color: #484644;
 }
 
+p {
+    line-height: 1.5;
+}
+
 a,
 a:active,
 a:hover,

@@ -3,7 +3,10 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
+                    <!--
                     {{ with .Site.Params.copyright }}{{.}}{{ else }}&copy; {{ now.Format "2006"}}. All rights reserved. {{end}}
+                    -->
+                    {{ with .Site.Params.copyright }}{{.}}{{ else }}&copy; {{ now.Format "2006"}}   版权所有 {{end}}
                 </div>
                 <div class="li-page-footer-theme">
                     <!--

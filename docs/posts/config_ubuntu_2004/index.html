@@ -72,87 +72,87 @@
                         <p>Win10 下的测试环境，通过 VMware 安装 <a href="https://ubuntu.com/download/server">Ubuntu Server</a>，安装过程略。</p>
 <p><img src="/posts/images/2020-09-23_220019.png" alt="配置 ubuntu"></p>
 <h3 id="静态ip">静态IP</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ cd /etc/netplan
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ <span style="color:#8be9fd;font-style:italic">cd</span> /etc/netplan
 $ sudo vim 00-installer-config.yaml
 --- 
-<span style="color:#75715e"># This is the network config written by &#39;subiquity&#39;</span>
+<span style="color:#6272a4"># This is the network config written by &#39;subiquity&#39;</span>
 network:
   ethernets:
     ens33:
       dhcp4: no
-      addresses: <span style="color:#f92672">[</span>192.168.217.133/24<span style="color:#f92672">]</span>
-      optional: true
+      addresses: <span style="color:#ff79c6">[</span>192.168.217.133/24<span style="color:#ff79c6">]</span>
+      optional: <span style="color:#8be9fd;font-style:italic">true</span>
       gateway4: 192.168.217.2
       nameservers:
-              addresses: <span style="color:#f92672">[</span>192.168.217.2<span style="color:#f92672">]</span>
-  version: <span style="color:#ae81ff">2</span>
+              addresses: <span style="color:#ff79c6">[</span>192.168.217.2<span style="color:#ff79c6">]</span>
+  version: <span style="color:#bd93f9">2</span>
 ---
 $ sudo netplan apply
 </code></pre></div><h3 id="ssh">ssh</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ sudo systemctl enable ssh
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ sudo systemctl <span style="color:#8be9fd;font-style:italic">enable</span> ssh
 $ sudo systemctl start ssh
 </code></pre></div><h3 id="配置-apt">配置 apt</h3>
 <p><a href="https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/">https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/</a></p>
 <h3 id="升级">升级</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ sudo apt update
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ sudo apt update
 $ sudo apt upgrade
 </code></pre></div><h3 id="安装软件">安装软件</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ sudo apt install vim zsh tmux mlocate git htop
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ sudo apt install vim zsh tmux mlocate git htop
 </code></pre></div><h3 id="代理">代理</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ sudo apt install proxychains-ng
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ sudo apt install proxychains-ng
 $ sudo vim /etc/proxychains4.conf
 ---
-+ http    192.168.1.3 <span style="color:#ae81ff">8001</span>
++ http    192.168.1.3 <span style="color:#bd93f9">8001</span>
 ---
 $ vim ~/.zshrc
 ---
-+ alias pr<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;proxychains4&#39;</span>
++ <span style="color:#8be9fd;font-style:italic">alias</span> <span style="color:#8be9fd;font-style:italic">pr</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;proxychains4&#39;</span>
 ---
 $ pr curl google.com
 </code></pre></div><h3 id="oh-my-zsh">oh-my-zsh</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ vim ~/.zshrc
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ vim ~/.zshrc
 ---
-+ ZSH_THEME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;eastwood&#34;</span>
-+ alias zshconfig<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;vim ~/.zshrc&#34;</span>
-+ alias ll<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;ls -alh&#39;</span>
-+ alias pr<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;proxychains4&#39;</span>
++ <span style="color:#8be9fd;font-style:italic">ZSH_THEME</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;eastwood&#34;</span>
++ <span style="color:#8be9fd;font-style:italic">alias</span> <span style="color:#8be9fd;font-style:italic">zshconfig</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;vim ~/.zshrc&#34;</span>
++ <span style="color:#8be9fd;font-style:italic">alias</span> <span style="color:#8be9fd;font-style:italic">ll</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;ls -alh&#39;</span>
++ <span style="color:#8be9fd;font-style:italic">alias</span> <span style="color:#8be9fd;font-style:italic">pr</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;proxychains4&#39;</span>
 </code></pre></div><h3 id="vim">vim</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ vim ~/.vimrc
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ vim ~/.vimrc
 ---
-set encoding<span style="color:#f92672">=</span>utf-8
-set tabstop<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>
-set softtabstop<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>
-set shiftwidth<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>
-<span style="color:#e6db74">&#34;set laststatus=2
-</span><span style="color:#e6db74">set showmatch
-</span><span style="color:#e6db74">set autoindent
-</span><span style="color:#e6db74">set incsearch
-</span><span style="color:#e6db74">set ignorecase
-</span><span style="color:#e6db74">set hlsearch
-</span><span style="color:#e6db74">set number
-</span><span style="color:#e6db74">set ruler
-</span><span style="color:#e6db74">
-</span><span style="color:#e6db74">syntax on
-</span><span style="color:#e6db74">filetype on
-</span><span style="color:#e6db74">
-</span><span style="color:#e6db74">&#34;</span> leader
-let mapleader <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39; &#39;</span>
+<span style="color:#8be9fd;font-style:italic">set</span> <span style="color:#8be9fd;font-style:italic">encoding</span><span style="color:#ff79c6">=</span>utf-8
+<span style="color:#8be9fd;font-style:italic">set</span> <span style="color:#8be9fd;font-style:italic">tabstop</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">4</span>
+<span style="color:#8be9fd;font-style:italic">set</span> <span style="color:#8be9fd;font-style:italic">softtabstop</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">4</span>
+<span style="color:#8be9fd;font-style:italic">set</span> <span style="color:#8be9fd;font-style:italic">shiftwidth</span><span style="color:#ff79c6">=</span><span style="color:#bd93f9">4</span>
+<span style="color:#f1fa8c">&#34;set laststatus=2
+</span><span style="color:#f1fa8c">set showmatch
+</span><span style="color:#f1fa8c">set autoindent
+</span><span style="color:#f1fa8c">set incsearch
+</span><span style="color:#f1fa8c">set ignorecase
+</span><span style="color:#f1fa8c">set hlsearch
+</span><span style="color:#f1fa8c">set number
+</span><span style="color:#f1fa8c">set ruler
+</span><span style="color:#f1fa8c">
+</span><span style="color:#f1fa8c">syntax on
+</span><span style="color:#f1fa8c">filetype on
+</span><span style="color:#f1fa8c">
+</span><span style="color:#f1fa8c">&#34;</span> leader
+<span style="color:#8be9fd;font-style:italic">let</span> <span style="color:#8be9fd;font-style:italic">mapleader</span> <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39; &#39;</span>
 
-<span style="color:#e6db74">&#34; edit vimrc
-</span><span style="color:#e6db74">:nnoremap &lt;leader&gt;rc :e ~/.vimrc&lt;cr&gt;
+<span style="color:#f1fa8c">&#34; edit vimrc
+</span><span style="color:#f1fa8c">:nnoremap &lt;leader&gt;rc :e ~/.vimrc&lt;cr&gt;
 </span></code></pre></div><h3 id="java">java</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ sudo dpkg -i jdk-11.0.7_linux-x64_bin.deb
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ sudo dpkg -i jdk-11.0.7_linux-x64_bin.deb
 $ vim ~/.zshrc
 $ sudo vim /etc/profile
 ---
-export JAVA_HOME<span style="color:#f92672">=</span>/usr/lib/jvm/jdk-11.0.7/
-export PATH<span style="color:#f92672">=</span>$JAVA_HOME/bin:$PATH
-export CLASSPATH<span style="color:#f92672">=</span>$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
-export JAVA_HOME PATH CLASSPATH
+<span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">JAVA_HOME</span><span style="color:#ff79c6">=</span>/usr/lib/jvm/jdk-11.0.7/
+<span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">PATH</span><span style="color:#ff79c6">=</span><span style="color:#8be9fd;font-style:italic">$JAVA_HOME</span>/bin:<span style="color:#8be9fd;font-style:italic">$PATH</span>
+<span style="color:#8be9fd;font-style:italic">export</span> <span style="color:#8be9fd;font-style:italic">CLASSPATH</span><span style="color:#ff79c6">=</span><span style="color:#8be9fd;font-style:italic">$JAVA_HOME</span>/lib/dt.jar:<span style="color:#8be9fd;font-style:italic">$JAVA_HOME</span>/lib/tools.jar
+<span style="color:#8be9fd;font-style:italic">export</span> JAVA_HOME PATH CLASSPATH
 ---
-$ source ~/.zshrc
+$ <span style="color:#8be9fd;font-style:italic">source</span> ~/.zshrc
 $ java -version
-</code></pre></div><p>创建快照，用吧。</p>
+</code></pre></div><p>最后，创建快照。</p>
                     </section>
                 </article>
             </div>

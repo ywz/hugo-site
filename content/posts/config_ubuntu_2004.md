@@ -115,4 +115,4 @@ $ source ~/.zshrc
 $ java -version
 ```
 
-创建快照，用吧。
+最后，创建快照。

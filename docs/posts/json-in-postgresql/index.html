@@ -68,93 +68,93 @@
                     </header>
                     <section>
                         <h3 id="postgresql-的版本">PostgreSQL 的版本</h3>
-<p>PostgreSQL9.2 开始支持 json 类型，但函数不全，不建议使用，9.5 版本加入了 jsonb_set 函数，9.6 版本加入了 jsonb_insert 函数，变更 json 内容变得非常容易，建议使用 9.5 以后的版本。</p>
+<p>PostgreSQL9.2 开始支持 JSON 类型，但函数不全，不建议使用，9.5 版本加入了 jsonb_set 函数，9.6 版本加入了 jsonb_insert 函数，变更 json 内容变得非常容易，所以建议使用 9.5 以后的版本。</p>
 <p><img src="/posts/images/postgresql-logo-1.jpg" alt="PostgreSQL"></p>
 <h3 id="json-和-jsonb">json 和 jsonb</h3>
 <blockquote>
 <p>有两种 JSON 数据类型：json 和 jsonb。它们<strong>几乎</strong>接受完全相同的值集合作为输入。主要的实际区别之一是效率。json 数据类型存储输入文本的精准拷贝，处理函数必须在每次执行时必须重新解析该数据。而 jsonb 数据被存储在一种分解好的二进制格式中，它在输入时要稍慢一些，因为需要做附加的转换。但是 jsonb 在处理时要快很多，因为不需要解析。jsonb 也支持索引，这也是一个令人瞩目的优势。</p>
 </blockquote>
 <h3 id="创建表">创建表</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">create</span> <span style="color:#66d9ef">table</span> fu_mp_param
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#ff79c6">create</span> <span style="color:#ff79c6">table</span> fu_mp_param
 (
-	fu_mp_id numeric(<span style="color:#ae81ff">16</span>) <span style="color:#66d9ef">not</span> <span style="color:#66d9ef">null</span>
-		<span style="color:#66d9ef">constraint</span> fu_mp_param_pkey
-			<span style="color:#66d9ef">primary</span> <span style="color:#66d9ef">key</span>,
-	fu_mp_value jsonb <span style="color:#66d9ef">not</span> <span style="color:#66d9ef">null</span>
+	fu_mp_id <span style="color:#8be9fd;font-style:italic">numeric</span>(<span style="color:#bd93f9">16</span>) <span style="color:#ff79c6">not</span> <span style="color:#ff79c6">null</span>
+		<span style="color:#ff79c6">constraint</span> fu_mp_param_pkey
+			<span style="color:#ff79c6">primary</span> <span style="color:#ff79c6">key</span>,
+	fu_mp_value jsonb <span style="color:#ff79c6">not</span> <span style="color:#ff79c6">null</span>
 )
 ;
 
-<span style="color:#75715e">-- 创建 JSONB 的索引
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">create</span> <span style="color:#66d9ef">index</span> idxgin
-	<span style="color:#66d9ef">on</span> fu_mp_param (fu_mp_value)
+<span style="color:#6272a4">-- 创建 JSONB 的索引
+</span><span style="color:#6272a4"></span><span style="color:#ff79c6">create</span> <span style="color:#ff79c6">index</span> idxgin
+	<span style="color:#ff79c6">on</span> fu_mp_param (fu_mp_value)
 ;
 </code></pre></div><h3 id="插入">插入</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">insert</span> <span style="color:#66d9ef">into</span> fu_mp_param <span style="color:#66d9ef">values</span>(<span style="color:#ae81ff">0</span>, <span style="color:#e6db74">&#39;{&#34;key1&#34;:&#34;value1&#34;}&#39;</span>);
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#ff79c6">insert</span> <span style="color:#ff79c6">into</span> fu_mp_param <span style="color:#ff79c6">values</span>(<span style="color:#bd93f9">0</span>, <span style="color:#f1fa8c">&#39;{&#34;key1&#34;:&#34;value1&#34;}&#39;</span>);
 </code></pre></div><p>Java 实现，两个关键点：</p>
 <ol>
 <li>连接参数中必须包含【stringtype=unspecified】</li>
 <li>用 PGobject 类型设置 json 或者 jsonb 的值</li>
 </ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">String url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;jdbc:postgresql://10.4.57.223/postgres?user=postgres&amp;password=neusoft&amp;ssl=false&amp;stringtype=unspecified&#34;</span><span style="color:#f92672">;</span>
-Connection conn <span style="color:#f92672">=</span> DriverManager<span style="color:#f92672">.</span><span style="color:#a6e22e">getConnection</span><span style="color:#f92672">(</span>URL<span style="color:#f92672">);</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">String url <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;jdbc:postgresql://10.4.57.223/postgres?user=postgres&amp;password=neusoft&amp;ssl=false&amp;stringtype=unspecified&#34;</span><span style="color:#ff79c6">;</span>
+Connection conn <span style="color:#ff79c6">=</span> DriverManager<span style="color:#ff79c6">.</span><span style="color:#50fa7b">getConnection</span><span style="color:#ff79c6">(</span>URL<span style="color:#ff79c6">);</span>
 
-<span style="color:#75715e">// ---
-</span><span style="color:#75715e"></span>String sql <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;insert into fu_mp_param values(?, ?);&#34;</span><span style="color:#f92672">;</span>
-st <span style="color:#f92672">=</span> conn<span style="color:#f92672">.</span><span style="color:#a6e22e">prepareStatement</span><span style="color:#f92672">(</span>sql<span style="color:#f92672">);</span>
+<span style="color:#6272a4">// ---
+</span><span style="color:#6272a4"></span>String sql <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;insert into fu_mp_param values(?, ?);&#34;</span><span style="color:#ff79c6">;</span>
+st <span style="color:#ff79c6">=</span> conn<span style="color:#ff79c6">.</span><span style="color:#50fa7b">prepareStatement</span><span style="color:#ff79c6">(</span>sql<span style="color:#ff79c6">);</span>
 
-st<span style="color:#f92672">.</span><span style="color:#a6e22e">setInt</span><span style="color:#f92672">(</span>1<span style="color:#f92672">,</span> i<span style="color:#f92672">);</span>
+st<span style="color:#ff79c6">.</span><span style="color:#50fa7b">setInt</span><span style="color:#ff79c6">(</span>1<span style="color:#ff79c6">,</span> i<span style="color:#ff79c6">);</span>
 
-JSONObject obj <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> JSONObject<span style="color:#f92672">();</span>
-PGobject pgObject <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> PGobject<span style="color:#f92672">();</span>
-pgObject<span style="color:#f92672">.</span><span style="color:#a6e22e">setType</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;json&#34;</span><span style="color:#f92672">);</span>
-pgObject<span style="color:#f92672">.</span><span style="color:#a6e22e">setValue</span><span style="color:#f92672">(</span>obj<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">());</span>
-st<span style="color:#f92672">.</span><span style="color:#a6e22e">setObject</span><span style="color:#f92672">(</span>2<span style="color:#f92672">,</span> pgObject<span style="color:#f92672">);</span>
+JSONObject obj <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> JSONObject<span style="color:#ff79c6">();</span>
+PGobject pgObject <span style="color:#ff79c6">=</span> <span style="color:#ff79c6">new</span> PGobject<span style="color:#ff79c6">();</span>
+pgObject<span style="color:#ff79c6">.</span><span style="color:#50fa7b">setType</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;json&#34;</span><span style="color:#ff79c6">);</span>
+pgObject<span style="color:#ff79c6">.</span><span style="color:#50fa7b">setValue</span><span style="color:#ff79c6">(</span>obj<span style="color:#ff79c6">.</span><span style="color:#50fa7b">toString</span><span style="color:#ff79c6">());</span>
+st<span style="color:#ff79c6">.</span><span style="color:#50fa7b">setObject</span><span style="color:#ff79c6">(</span>2<span style="color:#ff79c6">,</span> pgObject<span style="color:#ff79c6">);</span>
 
-st<span style="color:#f92672">.</span><span style="color:#a6e22e">executeUpdate</span><span style="color:#f92672">();</span>
+st<span style="color:#ff79c6">.</span><span style="color:#50fa7b">executeUpdate</span><span style="color:#ff79c6">();</span>
 </code></pre></div><h3 id="更新">更新</h3>
 <p>主要用到 <a href="https://www.postgresql.org/docs/9.6/static/functions-json.html">jsonb_set</a> 函数</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">update</span> fu_mp_param
-<span style="color:#66d9ef">set</span> fu_mp_value <span style="color:#f92672">=</span> jsonb_set(fu_mp_value, <span style="color:#e6db74">&#39;{item}&#39;</span>, <span style="color:#e6db74">&#39;9999&#39;</span>, <span style="color:#66d9ef">false</span>)
-<span style="color:#66d9ef">where</span> fu_mp_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">328323</span>;
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">String sql <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;update fu_mp_param set fu_mp_value = jsonb_set(fu_mp_value, &#39;{item}&#39;, ?, false) where fu_mp_id = ?;&#34;</span><span style="color:#f92672">;</span>
-st <span style="color:#f92672">=</span> conn<span style="color:#f92672">.</span><span style="color:#a6e22e">prepareStatement</span><span style="color:#f92672">(</span>sql<span style="color:#f92672">);</span>
-st<span style="color:#f92672">.</span><span style="color:#a6e22e">setString</span><span style="color:#f92672">(</span>1<span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;54321&#34;</span><span style="color:#f92672">);</span>
-st<span style="color:#f92672">.</span><span style="color:#a6e22e">setInt</span><span style="color:#f92672">(</span>2<span style="color:#f92672">,</span> 328323<span style="color:#f92672">);</span>
-st<span style="color:#f92672">.</span><span style="color:#a6e22e">executeUpdate</span><span style="color:#f92672">();</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#ff79c6">update</span> fu_mp_param
+<span style="color:#ff79c6">set</span> fu_mp_value <span style="color:#ff79c6">=</span> jsonb_set(fu_mp_value, <span style="color:#f1fa8c">&#39;{item}&#39;</span>, <span style="color:#f1fa8c">&#39;9999&#39;</span>, <span style="color:#ff79c6">false</span>)
+<span style="color:#ff79c6">where</span> fu_mp_id <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">328323</span>;
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">String sql <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;update fu_mp_param set fu_mp_value = jsonb_set(fu_mp_value, &#39;{item}&#39;, ?, false) where fu_mp_id = ?;&#34;</span><span style="color:#ff79c6">;</span>
+st <span style="color:#ff79c6">=</span> conn<span style="color:#ff79c6">.</span><span style="color:#50fa7b">prepareStatement</span><span style="color:#ff79c6">(</span>sql<span style="color:#ff79c6">);</span>
+st<span style="color:#ff79c6">.</span><span style="color:#50fa7b">setString</span><span style="color:#ff79c6">(</span>1<span style="color:#ff79c6">,</span> <span style="color:#f1fa8c">&#34;54321&#34;</span><span style="color:#ff79c6">);</span>
+st<span style="color:#ff79c6">.</span><span style="color:#50fa7b">setInt</span><span style="color:#ff79c6">(</span>2<span style="color:#ff79c6">,</span> 328323<span style="color:#ff79c6">);</span>
+st<span style="color:#ff79c6">.</span><span style="color:#50fa7b">executeUpdate</span><span style="color:#ff79c6">();</span>
 </code></pre></div><h3 id="检索">检索</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#75715e">-- 检索 jsonb 中包含 {&#34;set_value&#34;:10000} 的数据
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">select</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#6272a4">-- 检索 jsonb 中包含 {&#34;set_value&#34;:10000} 的数据
+</span><span style="color:#6272a4"></span><span style="color:#ff79c6">select</span>
   fu_mp_id,
-  fu_mp_value<span style="color:#f92672">-&gt;</span><span style="color:#e6db74">&#39;get_time&#39;</span> <span style="color:#75715e">--提取 [json 中 get_time] 的值 
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">from</span> fu_mp_param
-<span style="color:#66d9ef">where</span> fu_mp_value <span style="color:#f92672">@&gt;</span> <span style="color:#e6db74">&#39;{&#34;set_value&#34;:10000}&#39;</span>;
+  fu_mp_value<span style="color:#ff79c6">-&gt;</span><span style="color:#f1fa8c">&#39;get_time&#39;</span> <span style="color:#6272a4">--提取 [json 中 get_time] 的值 
+</span><span style="color:#6272a4"></span><span style="color:#ff79c6">from</span> fu_mp_param
+<span style="color:#ff79c6">where</span> fu_mp_value <span style="color:#ff79c6">@&gt;</span> <span style="color:#f1fa8c">&#39;{&#34;set_value&#34;:10000}&#39;</span>;
 </code></pre></div><h3 id="插件">插件</h3>
 <p>正常通过内部函数取得的结果都是 json(b) 格式，可以用 <a href="https://github.com/tobyhede/postsql">postsql</a> 对输出结果进行格式化。postsql 依赖 plv8 插件，默认只支持 json 类型，可以自己修改一套给 jsonb 用。下面是一个简单的例子，其它函数的用法参照文档。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">select</span> jsonb_int(fu_mp_value, <span style="color:#e6db74">&#39;set_value&#39;</span>)
-<span style="color:#66d9ef">from</span> fu_mp_param
-<span style="color:#66d9ef">where</span> fu_mp_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">328323</span>;
-</code></pre></div><p>postsql 函数因为用 js 的 v8 引擎实现，效率并不高，所以<!-- raw HTML omitted -->不建议<!-- raw HTML omitted -->用在 where 条件里。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#ff79c6">select</span> jsonb_int(fu_mp_value, <span style="color:#f1fa8c">&#39;set_value&#39;</span>)
+<span style="color:#ff79c6">from</span> fu_mp_param
+<span style="color:#ff79c6">where</span> fu_mp_id <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">328323</span>;
+</code></pre></div><p>postsql 函数因为用 js 的 v8 引擎实现，效率并不高，所以<strong>不建议</strong>用在 where 条件里。</p>
 <h3 id="容量">容量</h3>
 <p>理论上 json(b) 能容纳 1GB 的数据量。（<a href="https://stackoverflow.com/questions/12632871/size-limit-of-json-data-type-in-postgresql">参考</a>）</p>
 <h3 id="索引">索引</h3>
 <p>测试环境：8 核 16G，机械硬盘，数据量一千万。
 SQL：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span>
-<span style="color:#66d9ef">from</span> fu_mp_param
-<span style="color:#66d9ef">where</span> fu_mp_value <span style="color:#f92672">-&gt;&gt;</span> <span style="color:#e6db74">&#39;fu_mp_id&#39;</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;1000&#39;</span>;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#ff79c6">select</span> <span style="color:#ff79c6">*</span>
+<span style="color:#ff79c6">from</span> fu_mp_param
+<span style="color:#ff79c6">where</span> fu_mp_value <span style="color:#ff79c6">-&gt;&gt;</span> <span style="color:#f1fa8c">&#39;fu_mp_id&#39;</span> <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;1000&#39;</span>;
 </code></pre></div><p>创建索引前：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-plain" data-lang="plain">starting from 1 in 2 s 719 ms (execution: 2 s 657 ms, fetching: 62 ms)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-plain" data-lang="plain">starting from 1 in 2 s 719 ms (execution: 2 s 657 ms, fetching: 62 ms)
 </code></pre></div><p>创建索引</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">create</span> <span style="color:#66d9ef">index</span> bidbtree <span style="color:#66d9ef">on</span> fu_mp_param <span style="color:#66d9ef">using</span> btree ((fu_mp_value<span style="color:#f92672">-&gt;&gt;</span><span style="color:#e6db74">&#39;fu_mp_id&#39;</span>));
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#ff79c6">create</span> <span style="color:#ff79c6">index</span> bidbtree <span style="color:#ff79c6">on</span> fu_mp_param <span style="color:#ff79c6">using</span> btree ((fu_mp_value<span style="color:#ff79c6">-&gt;&gt;</span><span style="color:#f1fa8c">&#39;fu_mp_id&#39;</span>));
 </code></pre></div><p>再次执行</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-plain" data-lang="plain">starting from 1 in 31 ms (execution: 0 ms, fetching: 31 ms)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-plain" data-lang="plain">starting from 1 in 31 ms (execution: 0 ms, fetching: 31 ms)
 </code></pre></div><p><a href="http://francs3.blog.163.com/blog/static/40576727201452293027868/">更多关于索引的用法</a></p>
 <h3 id="其它">其它</h3>
-<p>上面的例子都是对 json(b) 的简单操作，PostgreSQL 同样支持 json(b) 中的数组，参考：<!-- raw HTML omitted -->
-<a href="http://postgres.cn/docs/9.6/datatype-json.html">JSON 类型文档</a><!-- raw HTML omitted -->
+<p>上面的例子都是对 json(b) 的简单操作，PostgreSQL 同样支持 json(b) 中的数组，参考：<br>
+<a href="http://postgres.cn/docs/9.6/datatype-json.html">JSON 类型文档</a><br>
 <a href="http://postgres.cn/docs/9.6/functions-json.html">JSON 函数和操作符</a></p>
-<p>oracle 从 12.1.0.2.0 版开始也加入了对 json 类型的支持，说明：<!-- raw HTML omitted -->
-<a href="https://oracle-base.com/articles/12c/json-support-in-oracle-database-12cr1">JSON Support in Oracle Database 12c Release 1 (12.1.0.2)</a><!-- raw HTML omitted -->
+<p>oracle 从 12.1.0.2.0 版开始也加入了对 json 类型的支持，说明：<br>
+<a href="https://oracle-base.com/articles/12c/json-support-in-oracle-database-12cr1">JSON Support in Oracle Database 12c Release 1 (12.1.0.2)</a><br>
 <a href="https://oracle-base.com/articles/12c/indexing-json-data-in-oracle-database-12cr1">Indexing JSON Data in Oracle Database 12c Release 1 (12.1.0.2)</a></p>
                     </section>
                 </article>

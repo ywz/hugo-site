@@ -6,7 +6,7 @@ tags: [json,sql,postgresql]
 
 ### PostgreSQL 的版本
 
-PostgreSQL9.2 开始支持 json 类型，但函数不全，不建议使用，9.5 版本加入了 jsonb\_set 函数，9.6 版本加入了 jsonb\_insert 函数，变更 json 内容变得非常容易，建议使用 9.5 以后的版本。
+PostgreSQL9.2 开始支持 JSON 类型，但函数不全，不建议使用，9.5 版本加入了 jsonb\_set 函数，9.6 版本加入了 jsonb\_insert 函数，变更 json 内容变得非常容易，所以建议使用 9.5 以后的版本。
 
 ![PostgreSQL](/posts/images/postgresql-logo-1.jpg)
 
@@ -88,7 +88,7 @@ select jsonb_int(fu_mp_value, 'set_value')
 from fu_mp_param
 where fu_mp_id = 328323;
 ```
-postsql 函数因为用 js 的 v8 引擎实现，效率并不高，所以<span data-type="background" style="background-color:#FADB14">不建议</span>用在 where 条件里。
+postsql 函数因为用 js 的 v8 引擎实现，效率并不高，所以**不建议**用在 where 条件里。
 
 ### 容量
 理论上 json(b) 能容纳 1GB 的数据量。（[参考](https://stackoverflow.com/questions/12632871/size-limit-of-json-data-type-in-postgresql)）
@@ -116,10 +116,10 @@ starting from 1 in 31 ms (execution: 0 ms, fetching: 31 ms)
 [更多关于索引的用法](http://francs3.blog.163.com/blog/static/40576727201452293027868/)
 
 ### 其它
-上面的例子都是对 json(b) 的简单操作，PostgreSQL 同样支持 json(b) 中的数组，参考：<br />
-[JSON 类型文档](http://postgres.cn/docs/9.6/datatype-json.html)<br />
+上面的例子都是对 json(b) 的简单操作，PostgreSQL 同样支持 json(b) 中的数组，参考：  
+[JSON 类型文档](http://postgres.cn/docs/9.6/datatype-json.html)  
 [JSON 函数和操作符](http://postgres.cn/docs/9.6/functions-json.html)
 
-oracle 从 12.1.0.2.0 版开始也加入了对 json 类型的支持，说明：<br />
-[JSON Support in Oracle Database 12c Release 1 (12.1.0.2)](https://oracle-base.com/articles/12c/json-support-in-oracle-database-12cr1)<br />
+oracle 从 12.1.0.2.0 版开始也加入了对 json 类型的支持，说明：  
+[JSON Support in Oracle Database 12c Release 1 (12.1.0.2)](https://oracle-base.com/articles/12c/json-support-in-oracle-database-12cr1)  
 [Indexing JSON Data in Oracle Database 12c Release 1 (12.1.0.2)](https://oracle-base.com/articles/12c/indexing-json-data-in-oracle-database-12cr1)

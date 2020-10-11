@@ -29,7 +29,7 @@ Prometheus几乎已成为监控领域的事实标准，它自带高效的时序�
 <!--more-->
 
 ## 环境要求
-因为 Prometheus 和 Grafana 都由 Go 编写，所以对环境基本没有要求，本文用的是 Centos 7(10.4.43.140)。
+因为 Prometheus 和 Grafana 都由 Go 编写，所以对环境基本没有要求。
 
 __注意：要保证所有服务器时间同步。__
 
@@ -42,7 +42,7 @@ mv prometheus-2.6.0.linux-amd64 prometheus
 rm prometheus-2.6.0.linux-amd64.tar.gz
 ```
 
-#### 添加 target
+### 添加 target
 target 指发布指标数据的 http 服务的地址，添加新 target 后需要重启 Prometheus。
 
 ``` yml
@@ -54,7 +54,7 @@ scrape_configs:
       - targets: ['localhost:9095']
 ```
 
-#### 启动
+### 启动
 下面是最简单的启动命令，可以利用 `systemd` 或者 [supervisord](http://supervisord.org/) 实现自动启动。下同。
 
 ``` shell
@@ -62,7 +62,7 @@ cd prometheus/
 nohup ./prometheus --config.file=prometheus.yml &
 ```
 
-#### 参考：测试用 prometheus.yml
+### 参考：测试用 prometheus.yml
 
 ``` yml
 # my global config
@@ -126,13 +126,13 @@ mv node_exporter-0.17.0.linux-amd64 node_exporter
 rm node_exporter-0.17.0.linux-amd64.tar.gz
 ```
 
-#### 启动
+### 启动
 ``` shell
 cd /node_exporter
 nohup ./node_exporter &
 ```
 
-#### target
+### target
 ``` yml
 - job_name: "node141"
   static_configs:
@@ -148,14 +148,14 @@ mv grafana-5.4.2 grafana
 rm grafana-5.4.2.linux-amd64.tar.gz
 ```
 
-#### 启动
+### 启动
 ``` shell
 cd grafana/
 nohup ./grafana-server &
 ```
 
 ## 整合 Kamon
-#### Maven 依赖
+### Maven 依赖
 这里列的是全部，用不上的可以去掉。
 
 ``` xml
@@ -192,7 +192,7 @@ nohup ./grafana-server &
 </dependency>
 ```
 
-#### 配置
+### 配置
 
 修改 kamon.conf，加入下面的内容，根据需求修改。
 
@@ -291,7 +291,7 @@ kamon.prometheus {
 
 9095 是 prometheus 配置里监控的端口号。
 
-#### excludes
+### excludes
 如果 akka 程序中启动了上万的 actor，Prometheus 会非常卡。  
 解决办法：将此 actor 的指标数据从 kamon 排除。
 
@@ -346,7 +346,7 @@ kamon.akka {
 }
 ```
 
-#### 添加 reporter
+### 添加 reporter
 
 在 Akka 应用的启动类里，加入下面的 reporter。
 
@@ -359,7 +359,7 @@ Kamon.addReporter(new PrometheusReporter());
 // Kamon.addReporter(new StatsDReporter());
 ```
 
-#### 配置 AspectJ weaver
+### 配置 AspectJ weaver
 
 AspectJ weaver 的[下载地址](https://search.maven.org/search?q=a:aspectjweaver)。
 
@@ -371,16 +371,16 @@ AspectJ weaver 的[下载地址](https://search.maven.org/search?q=a:aspectjweav
 ## 确认
 正常启动 Akka 程序，Prometheus，node_exporter，Grafana 后。
 
-#### kamon-prometheus
+### kamon-prometheus
 用浏览器访问 kamon-prometheus 的 embedded-server (kamon.conf 里配置)，程序启动 60s 后，可以看到指标数据。
 
-#### Prometheus
+### Prometheus
 确认 targets 状态: http://10.4.43.140:9090/targets
 
 接下来可以用 Prometheus 的搜索功能确认是否已经收到了数据。http://10.4.43.140:9090/graph
 
 ## Grafana 使用
-#### 访问
+### 访问
 地址: http://10.4.43.140:3000
 
 初始用户名密码
@@ -391,10 +391,10 @@ admin_user = admin
 admin_password = admin
 ```
 
-#### 添加 data source
+### 添加 data source
 按照向导，添加刚才启动的 Prometheus。
 
-#### 添加 dashboard
+### 添加 dashboard
 文档附带的 json 可以直接导入为 dashboard。
 
 - kamon: kamon_akka_monitor.json

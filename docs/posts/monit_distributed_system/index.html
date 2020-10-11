@@ -101,7 +101,7 @@ Prometheus几乎已成为监控领域的事实标准，它自带高效的时序�
 <h2 id="截图">截图</h2>
 <p><img src="/posts/images/2019-02-14_142746.png" alt="grafana"></p>
 <h2 id="环境要求">环境要求</h2>
-<p>因为 Prometheus 和 Grafana 都由 Go 编写，所以对环境基本没有要求，本文用的是 Centos 7(10.4.43.140)。</p>
+<p>因为 Prometheus 和 Grafana 都由 Go 编写，所以对环境基本没有要求。</p>
 <p><strong>注意：要保证所有服务器时间同步。</strong></p>
 <h2 id="安装-prometheus">安装 Prometheus</h2>
 <p>下载地址: <a href="https://prometheus.io/download/">https://prometheus.io/download/</a></p>
@@ -109,7 +109,7 @@ Prometheus几乎已成为监控领域的事实标准，它自带高效的时序�
 tar xvf prometheus-2.6.0.linux-amd64.tar.gz
 mv prometheus-2.6.0.linux-amd64 prometheus
 rm prometheus-2.6.0.linux-amd64.tar.gz
-</code></pre></div><h4 id="添加-target">添加 target</h4>
+</code></pre></div><h3 id="添加-target">添加 target</h3>
 <p>target 指发布指标数据的 http 服务的地址，添加新 target 后需要重启 Prometheus。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">vim prometheus.yml
 --- 添加 ---
@@ -117,11 +117,11 @@ rm prometheus-2.6.0.linux-amd64.tar.gz
   - <span style="color:#ff79c6">job_name</span>: kamon-prometheus
     <span style="color:#ff79c6">static_configs</span>:
       - <span style="color:#ff79c6">targets</span>: [<span style="color:#f1fa8c">&#39;localhost:9095&#39;</span>]
-</code></pre></div><h4 id="启动">启动</h4>
+</code></pre></div><h3 id="启动">启动</h3>
 <p>下面是最简单的启动命令，可以利用 <code>systemd</code> 或者 <a href="http://supervisord.org/">supervisord</a> 实现自动启动。下同。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#8be9fd;font-style:italic">cd</span> prometheus/
 nohup ./prometheus --config.file<span style="color:#ff79c6">=</span>prometheus.yml &amp;
-</code></pre></div><h4 id="参考测试用-prometheusyml">参考：测试用 prometheus.yml</h4>
+</code></pre></div><h3 id="参考测试用-prometheusyml">参考：测试用 prometheus.yml</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#6272a4"># my global config</span>
 <span style="color:#ff79c6">global</span>:
   <span style="color:#ff79c6">scrape_interval</span>:     15s <span style="color:#6272a4"># Set the scrape interval to every 15 seconds. Default is every 1 minute.</span>
@@ -177,10 +177,10 @@ nohup ./prometheus --config.file<span style="color:#ff79c6">=</span>prometheus.y
 tar xvf node_exporter-0.17.0.linux-amd64.tar.gz
 mv node_exporter-0.17.0.linux-amd64 node_exporter
 rm node_exporter-0.17.0.linux-amd64.tar.gz
-</code></pre></div><h4 id="启动-1">启动</h4>
+</code></pre></div><h3 id="启动-1">启动</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#8be9fd;font-style:italic">cd</span> /node_exporter
 nohup ./node_exporter &amp;
-</code></pre></div><h4 id="target">target</h4>
+</code></pre></div><h3 id="target">target</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">- <span style="color:#ff79c6">job_name</span>: <span style="color:#f1fa8c">&#34;node141&#34;</span>
   <span style="color:#ff79c6">static_configs</span>:
   - <span style="color:#ff79c6">targets</span>: [<span style="color:#f1fa8c">&#39;10.4.43.141:9100&#39;</span>]
@@ -190,11 +190,11 @@ nohup ./node_exporter &amp;
 tar xvf grafana-5.4.2.linux-amd64.tar.gz
 mv grafana-5.4.2 grafana
 rm grafana-5.4.2.linux-amd64.tar.gz
-</code></pre></div><h4 id="启动-2">启动</h4>
+</code></pre></div><h3 id="启动-2">启动</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#8be9fd;font-style:italic">cd</span> grafana/
 nohup ./grafana-server &amp;
 </code></pre></div><h2 id="整合-kamon">整合 Kamon</h2>
-<h4 id="maven-依赖">Maven 依赖</h4>
+<h3 id="maven-依赖">Maven 依赖</h3>
 <p>这里列的是全部，用不上的可以去掉。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#6272a4">&lt;!-- kamon --&gt;</span>
 <span style="color:#ff79c6">&lt;dependency&gt;</span>
@@ -227,7 +227,7 @@ nohup ./grafana-server &amp;
     <span style="color:#ff79c6">&lt;artifactId&gt;</span>aspectjweaver<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
     <span style="color:#ff79c6">&lt;version&gt;</span>1.9.2<span style="color:#ff79c6">&lt;/version&gt;</span>
 <span style="color:#ff79c6">&lt;/dependency&gt;</span>
-</code></pre></div><h4 id="配置">配置</h4>
+</code></pre></div><h3 id="配置">配置</h3>
 <p>修改 kamon.conf，加入下面的内容，根据需求修改。</p>
 <p>filter</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">kamon.util.filters {
@@ -315,7 +315,7 @@ kamon.prometheus {
   }
 }
 </code></pre></div><p>9095 是 prometheus 配置里监控的端口号。</p>
-<h4 id="excludes">excludes</h4>
+<h3 id="excludes">excludes</h3>
 <p>如果 akka 程序中启动了上万的 actor，Prometheus 会非常卡。<br>
 解决办法：将此 actor 的指标数据从 kamon 排除。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">vim kamon.conf
@@ -366,7 +366,7 @@ kamon.internal-config {
 kamon.akka {
   ask-pattern-timeout-warning = heavyweight
 }
-</code></pre></div><h4 id="添加-reporter">添加 reporter</h4>
+</code></pre></div><h3 id="添加-reporter">添加 reporter</h3>
 <p>在 Akka 应用的启动类里，加入下面的 reporter。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#6272a4">// kamon
 </span><span style="color:#6272a4"></span>Config kamonConfig <span style="color:#ff79c6">=</span> ConfigFactory<span style="color:#ff79c6">.</span><span style="color:#50fa7b">load</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;kamon.conf&#34;</span><span style="color:#ff79c6">).</span><span style="color:#50fa7b">withFallback</span><span style="color:#ff79c6">(</span>Kamon<span style="color:#ff79c6">.</span><span style="color:#50fa7b">config</span><span style="color:#ff79c6">());</span>
@@ -374,27 +374,27 @@ Kamon<span style="color:#ff79c6">.</span><span style="color:#50fa7b">reconfigure
 Kamon<span style="color:#ff79c6">.</span><span style="color:#50fa7b">addReporter</span><span style="color:#ff79c6">(</span><span style="color:#ff79c6">new</span> PrometheusReporter<span style="color:#ff79c6">());</span>
 <span style="color:#6272a4">// Kamon.addReporter(new ZipkinReporter());
 </span><span style="color:#6272a4">// Kamon.addReporter(new StatsDReporter());
-</span></code></pre></div><h4 id="配置-aspectj-weaver">配置 AspectJ weaver</h4>
+</span></code></pre></div><h3 id="配置-aspectj-weaver">配置 AspectJ weaver</h3>
 <p>AspectJ weaver 的<a href="https://search.maven.org/search?q=a:aspectjweaver">下载地址</a>。</p>
 <p>在 Akka 应用的 JVM 的启动参数加入 javaagent。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">-javaagent:path-to-aspectjweaver.jar
 </code></pre></div><h2 id="确认">确认</h2>
 <p>正常启动 Akka 程序，Prometheus，node_exporter，Grafana 后。</p>
-<h4 id="kamon-prometheus">kamon-prometheus</h4>
+<h3 id="kamon-prometheus">kamon-prometheus</h3>
 <p>用浏览器访问 kamon-prometheus 的 embedded-server (kamon.conf 里配置)，程序启动 60s 后，可以看到指标数据。</p>
-<h4 id="prometheus">Prometheus</h4>
+<h3 id="prometheus">Prometheus</h3>
 <p>确认 targets 状态: http://10.4.43.140:9090/targets</p>
 <p>接下来可以用 Prometheus 的搜索功能确认是否已经收到了数据。http://10.4.43.140:9090/graph</p>
 <h2 id="grafana-使用">Grafana 使用</h2>
-<h4 id="访问">访问</h4>
+<h3 id="访问">访问</h3>
 <p>地址: http://10.4.43.140:3000</p>
 <p>初始用户名密码</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">[security]
 admin_user = admin
 admin_password = admin
-</code></pre></div><h4 id="添加-data-source">添加 data source</h4>
+</code></pre></div><h3 id="添加-data-source">添加 data source</h3>
 <p>按照向导，添加刚才启动的 Prometheus。</p>
-<h4 id="添加-dashboard">添加 dashboard</h4>
+<h3 id="添加-dashboard">添加 dashboard</h3>
 <p>文档附带的 json 可以直接导入为 dashboard。</p>
 <ul>
 <li>kamon: kamon_akka_monitor.json</li>

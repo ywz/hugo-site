@@ -1,12 +1,12 @@
 ---
-title: "JSON 格式在 PostgreSQL 里的应用"
+title: "PostgreSQL 里操作 JSON"
 date: 2020-09-24T22:04:56+08:00
 tags: [json,sql,postgresql]
 ---
 
 ### PostgreSQL 的版本
 
-PostgreSQL9.2 开始支持 JSON 类型，但函数不全，不建议使用，9.5 版本加入了 jsonb\_set 函数，9.6 版本加入了 jsonb\_insert 函数，变更 json 内容变得非常容易，所以建议使用 9.5 以后的版本。
+PostgreSQL 9.2 开始支持 JSON 类型，但函数不全，不建议使用，9.5 版本加入了 jsonb\_set 函数，9.6 版本加入了 jsonb\_insert 函数，变更 json 内容变得非常容易，所以建议使用 9.5 以后的版本。
 
 ![PostgreSQL](/posts/images/postgresql-logo-1.jpg)
 

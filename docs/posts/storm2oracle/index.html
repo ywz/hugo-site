@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns="//www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>亿级数据量分布式入库实践（Oracle） &middot; oo8a</title>
+        <link rel='stylesheet' href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600' type='text/css'>
+        <link rel="stylesheet" href="https://oo8a.com//libraries/normalize.3.0.1.css" />
+        <link rel="stylesheet" href="https://oo8a.com//css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-144-precomposed.png" sizes="144x144" />
+        </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://oo8a.com/">oo8a</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">亿级数据量分布式入库实践（Oracle）</h1>
+                        <span class="li-article-taxonomies">
+                            
+
+                            
+                                with tags
+                                
+                                    <a href="https://oo8a.com//tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+                                
+                                    <a href="https://oo8a.com//tags/storm">storm</a>
+                                
+                                    <a href="https://oo8a.com//tags/akka">akka</a>
+                                
+                                    <a href="https://oo8a.com//tags/oracle">oracle</a>
+                                
+                                    <a href="https://oo8a.com//tags/%E6%80%A7%E8%83%BD">性能</a>
+                                
+                            
+                        </span>
+                         - 
+                        <time class="li-article-date">Sunday, October 11, 2020</time>
+                    </header>
+                    <section>
+                        <h2 id="需求描述">需求描述</h2>
+<p>某电网公司某网省采集系统，每天早上上班前需要把前一天冻结的电表数据入库完成，入库效率是重要的考核指标。</p>
+<h3 id="数据量">数据量</h3>
+<ul>
+<li>电表数大约 3000 万，需要入库的表有十几个，入库的数据量大约在 2 亿左右。</li>
+<li>除此之外，每小时也有三千万左右的数据需要入库。</li>
+</ul>
+<h3 id="时间限制">时间限制</h3>
+<p>任务高峰在凌晨 1 时 - 5 时（4 小时内）</p>
+<h2 id="架构">架构</h2>
+<h3 id="数据架构图">数据架构图</h3>
+<p><img src="/posts/images/base.png" alt="数据架构图"></p>
+<ul>
+<li>数据采集层：收集各种规约的报文，发送到 Kafka</li>
+<li>数据入库层：接收 Kafka 的报文，解析后入 Oracle，入 Oracle 成功后，入 HBase。由于历史原因，程序用 <a href="https://storm.apache.org/">Apache Storm</a> 编写。</li>
+<li>数据层：会被频繁访问的档案类数据和近 3 个月的量测数据会放在 Oracle，历史数据保存在 HBase。</li>
+<li>数据应用层：基于 HBase 中的数据开展电量计算、漏抄估算、数据挖掘和机器学习等业务</li>
+</ul>
+<h3 id="拓扑图">拓扑图</h3>
+<p><img src="/posts/images/topo.png" alt="拓扑图"></p>
+<ul>
+<li>Spout：接收收 Kafka 的报文，过滤非法报文。</li>
+<li>解析 Bolt：批量解析报文并校验解析结果，过程中会从 Redis 获取档案信息。</li>
+<li>入库 Bolt：批量入库。</li>
+</ul>
+<h2 id="性能瓶颈">性能瓶颈</h2>
+<p>程序第一版完成用了很短的时间，经过漫长的调优过程，总结了如下几个对性能影响较大的问题点。</p>
+<h3 id="解析">解析</h3>
+<p>程序接收到的报文为 JSON 格式，报文种类有 100 多种，接收到报文以后要判断报文种类，并针对报文种类进行解析，如果有每条报文解析需要 1 毫秒，2 亿条报文解析需要 55.6 小时，离期待的速度相差很远，所以解析速度最好要达到每毫秒 20 条以上。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">200000000/1000/60/60 = 55.6 小时
+ms        s    m  h
+</code></pre></div><h4 id="应对方案">应对方案</h4>
+<p>报文解析没有用代码解析，而是做成配置（存到 Oracle），用到了开源的 <a href="https://github.com/json-path/JsonPath">json-path</a> 工具，每种报文有一条对应的配置，直接通过 JSON 路径可以获取报文里的值，这样做的好处。</p>
+<ol>
+<li>应用更加灵活，支持新报文只需要加一条配置</li>
+<li>程序可复用性高</li>
+</ol>
+<p>测试时发现 json-path 效率非常低，并且在业务高峰时会发生 CPU 占用率高，内存溢出等问题。最终自己实现了一个简版的 json-path，功能比开源版本要少，但效率至少提升了 10 倍。</p>
+<p>同时因为使用了分布式程序，解析处理可以分摊给 N 台机器，利用并行处理来提高解析效率。</p>
+<h3 id="阻塞">阻塞</h3>
+<p>初版程序使用了 Storm 的 Ack 机制，如果有入库行为发生失败(fail)，会触发重试，导致这以后的数据都无法被处理。</p>
+<h4 id="应对方案-1">应对方案</h4>
+<ol>
+<li>关闭 Storm 的 Ack 功能，表之间的入库不会相互影响。</li>
+<li>入库批处理增加超时时间，提交超时程序可以继续执行。</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#ff79c6">package</span> java.sql<span style="color:#ff79c6">;</span>
+<span style="color:#8be9fd;font-style:italic">public</span> <span style="color:#8be9fd;font-style:italic">interface</span> <span style="color:#50fa7b">Statement</span> <span style="color:#8be9fd;font-style:italic">extends</span> Wrapper<span style="color:#ff79c6">,</span> AutoCloseable <span style="color:#ff79c6">{</span>
+    <span style="color:#6272a4">/**
+</span><span style="color:#6272a4">     * Sets the number of seconds the driver will wait for a
+</span><span style="color:#6272a4">     * &lt;code&gt;Statement&lt;/code&gt; object to execute to the given number of seconds.
+</span><span style="color:#6272a4">     *By default there is no limit on the amount of time allowed for a running
+</span><span style="color:#6272a4">     * statement to complete. If the limit is exceeded, an
+</span><span style="color:#6272a4">     * &lt;code&gt;SQLTimeoutException&lt;/code&gt; is thrown.
+</span><span style="color:#6272a4">     * A JDBC driver must apply this limit to the &lt;code&gt;execute&lt;/code&gt;,
+</span><span style="color:#6272a4">     * &lt;code&gt;executeQuery&lt;/code&gt; and &lt;code&gt;executeUpdate&lt;/code&gt; methods.
+</span><span style="color:#6272a4">     * &lt;p&gt;
+</span><span style="color:#6272a4">     * &lt;strong&gt;Note:&lt;/strong&gt; JDBC driver implementations may also apply this
+</span><span style="color:#6272a4">     * limit to {@code ResultSet} methods
+</span><span style="color:#6272a4">     * (consult your driver vendor documentation for details).
+</span><span style="color:#6272a4">     * &lt;p&gt;
+</span><span style="color:#6272a4">     * &lt;strong&gt;Note:&lt;/strong&gt; In the case of {@code Statement} batching, it is
+</span><span style="color:#6272a4">     * implementation defined as to whether the time-out is applied to
+</span><span style="color:#6272a4">     * individual SQL commands added via the {@code addBatch} method or to
+</span><span style="color:#6272a4">     * the entire batch of SQL commands invoked by the {@code executeBatch}
+</span><span style="color:#6272a4">     * method (consult your driver vendor documentation for details).
+</span><span style="color:#6272a4">     *
+</span><span style="color:#6272a4">     * @param seconds the new query timeout limit in seconds; zero means
+</span><span style="color:#6272a4">     *        there is no limit
+</span><span style="color:#6272a4">     * @exception SQLException if a database access error occurs,
+</span><span style="color:#6272a4">     * this method is called on a closed &lt;code&gt;Statement&lt;/code&gt;
+</span><span style="color:#6272a4">     *            or the condition {@code seconds &gt;= 0} is not satisfied
+</span><span style="color:#6272a4">     * @see #getQueryTimeout
+</span><span style="color:#6272a4">     */</span> 
+    <span style="color:#8be9fd">void</span> <span style="color:#50fa7b">setQueryTimeout</span><span style="color:#ff79c6">(</span><span style="color:#8be9fd">int</span> seconds<span style="color:#ff79c6">)</span> <span style="color:#8be9fd;font-style:italic">throws</span> SQLException<span style="color:#ff79c6">;</span>
+<span style="color:#ff79c6">}</span>
+</code></pre></div><h3 id="锁表">锁表</h3>
+<p>入库报文的种类有上百种之多，初版程序针对每一种报文类型，都有自己的入库 SQL 文，所以进程间对同一条数据的入库操作容易触发行锁。</p>
+<h4 id="应对方案-2">应对方案</h4>
+<ol>
+<li>改进 Storm 的分组策略自己编写自定义分组（<a href="https://storm.apache.org/releases/2.1.0/javadocs/org/apache/storm/grouping/CustomStreamGrouping.html">CustomStreamGrouping</a>），保证同一张表的同一条数据的所有入库 SQL 在一个线程进行。</li>
+<li>改进配置结构，针对同一个表的所有入库操作都尽量使用同一个 SQL 提交。（如下图）<br>
+<img src="/posts/images/sql.png" alt="锁表"></li>
+</ol>
+<h3 id="批量入库失败">批量入库失败</h3>
+<p>为了提高效率，Oracle 入库时采用批量提交，所以同一批次如果有一条失败，会导致该批次全部数据入库失败。</p>
+<h4 id="应对方案-3">应对方案</h4>
+<p><img src="/posts/images/retry.png" alt="重试"><br>
+批量提交失败后，会触发逐条重试，重试入库再次失败的数据会记录到【失败记录表】。</p>
+<h3 id="redis">Redis</h3>
+<p>每条报文对应的档案信息需要从 Redis 获取，每次 Redis io 需要零点几毫秒到几毫秒不等，所以每收到一条报文访问一次 Redis 显然行不通。</p>
+<h4 id="应对方案-4">应对方案</h4>
+<p>解析 Bolt 接收到报文不会马上解析，满足下面两个条件才会开始批量解析，集中利用资源减少 IO 次数可以大幅提升解析效率。</p>
+<ol>
+<li>满足约定数量会触发批量处理。</li>
+<li>如果长时间没有接收到新报文，无法满足约定数量，到达约定时间后也会触发批量处理。</li>
+</ol>
+<h3 id="序列化">序列化</h3>
+<p>由于 Storm 的 Spout 和 Bolt、Bolt 和 Bolt 间的消息传输需要对消息做序列化，初版程序消息体积比较大，会有资源占用高的问题。</p>
+<h4 id="应对方案-5">应对方案</h4>
+<p>减小序列化对象的体积。</p>
+<h3 id="oracle">Oracle</h3>
+<p>针对 Oracle 的优化如下。</p>
+<ol>
+<li>入库 Bolt 采用批量提交的策略。</li>
+<li>减少更新操作，能用插入用插入。</li>
+<li>合理选择连接池，推荐 <a href="https://github.com/brettwooldridge/HikariCP">HikariCP</a>。</li>
+<li>根据表的数据量设置每天或者每月自动分区。</li>
+<li>对于数据量特别大的表，直接插入或更新操作性能会严重不足，对应方案为建一张没有索引的临时表，Storm 入库入临时表（没有索引，数据量小，所以提交速度非常快），定时用存储过程将数据搬迁到正式表，经过验证，可以满足需求。</li>
+</ol>
+<h2 id="监控">监控</h2>
+<p>但由于历史原因，我们用的是 0.9 版本的 Storm，Storm UI 还没有 Metirc 功能，最终选择了 <a href="https://prometheus.io/">Prometheus</a> + <a href="https://github.com/prometheus/pushgateway">pushgateway</a> + <a href="https://grafana.com/">Grafana</a> 做成了监控功能。</p>
+<p>效果图如下(测试系统的截图)，现场运维可以通过监控画面监控入库状态、排除问题，优化程序。</p>
+<p><img src="/posts/images/h2o_grafana.png" alt="grafana"></p>
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>wz</strong>
+    </div>
+</div>
+
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        Older article<br />
+                        <a href="https://oo8a.com/posts/json-in-postgresql/"> PostgreSQL 里操作 JSON</a>
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        Later article<br />
+                        <a href="https://oo8a.com/posts/monit_distributed_system/"> 分布式程序监控方案</a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    
+                    &copy; 2020   版权所有 
+                </div>
+                <div class="li-page-footer-theme">
+                    
+					<span class="">本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可。</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    <!--
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+

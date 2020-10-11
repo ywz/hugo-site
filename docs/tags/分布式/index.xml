@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on oo8a</title>
-    <link>https://oo8a.com/posts/</link>
-    <description>Recent content in Posts on oo8a</description>
+    <title>分布式 on oo8a</title>
+    <link>https://oo8a.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F/</link>
+    <description>Recent content in 分布式 on oo8a</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <copyright>本作品采用知识共享署名-非商业性使用 4.0 国际许可协议&lt;/a&gt;进行许可。</copyright>
     <lastBuildDate>Sun, 11 Oct 2020 20:06:56 +0800</lastBuildDate>
     
-	<atom:link href="https://oo8a.com/posts/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://oo8a.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -71,36 +71,6 @@ Prometheus几乎已成为监控领域的事实标准，它自带高效的时序�
 &lt;li&gt;数据层：会被频繁访问的档案类数据和近 3 个月的量测数据会放在 Oracle，历史数据保存在 HBase。&lt;/li&gt;
 &lt;li&gt;数据应用层：基于 HBase 中的数据开展电量计算、漏抄估算、数据挖掘和机器学习等业务&lt;/li&gt;
 &lt;/ul&gt;</description>
-    </item>
-    
-    <item>
-      <title>PostgreSQL 里操作 JSON</title>
-      <link>https://oo8a.com/posts/json-in-postgresql/</link>
-      <pubDate>Thu, 24 Sep 2020 22:04:56 +0800</pubDate>
-      
-      <guid>https://oo8a.com/posts/json-in-postgresql/</guid>
-      <description>&lt;h3 id=&#34;postgresql-的版本&#34;&gt;PostgreSQL 的版本&lt;/h3&gt;
-&lt;p&gt;PostgreSQL 9.2 开始支持 JSON 类型，但函数不全，不建议使用，9.5 版本加入了 jsonb_set 函数，9.6 版本加入了 jsonb_insert 函数，变更 json 内容变得非常容易，所以建议使用 9.5 以后的版本。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://oo8a.com/posts/images/postgresql-logo-1.jpg&#34; alt=&#34;PostgreSQL&#34;&gt;&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>配置 ubuntu 20.04</title>
-      <link>https://oo8a.com/posts/config_ubuntu_2004/</link>
-      <pubDate>Fri, 12 Jun 2020 22:40:23 +0800</pubDate>
-      
-      <guid>https://oo8a.com/posts/config_ubuntu_2004/</guid>
-      <description>&lt;p&gt;Win10 下的测试环境，通过 VMware 安装 &lt;a href=&#34;https://ubuntu.com/download/server&#34;&gt;Ubuntu Server&lt;/a&gt;，安装过程略。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://oo8a.com/posts/images/2020-09-23_220019.png&#34; alt=&#34;配置 ubuntu&#34;&gt;&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Hello World</title>
-      <link>https://oo8a.com/posts/hello_world/</link>
-      <pubDate>Fri, 12 Jun 2020 21:57:39 +0800</pubDate>
-      
-      <guid>https://oo8a.com/posts/hello_world/</guid>
-      <description>你好，世界！</description>
     </item>
     
   </channel>

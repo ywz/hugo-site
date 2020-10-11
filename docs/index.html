@@ -49,12 +49,87 @@
                         <div class="li-article">
                             <article>
     <header>
-        <h2><a href="https://oo8a.com/posts/json-in-postgresql/">JSON 格式在 PostgreSQL 里的应用 </a></h2>
+        <h2><a href="https://oo8a.com/posts/monit_distributed_system/">分布式程序监控方案 </a></h2>
+        <time class="li-article-date">Sunday, October 11, 2020</time>
+    </header>
+    <section class="li-article-section">
+        <p>为了保证分布式系统的稳定性，可靠性，可运维性。掌控集群的核心性能指标，了解集群的性能表现，了解业务的进展情况，使用监控系统可以帮助我们更快的定位问题和解决问题。在尝试了很多方案后，我们最终选择了 Prometheus + Grafana 作为分布式系统（Akka 或 Storm）的监控方案，下面以 Akka 为例做介绍。</p>
+<h2 id="开源组件">开源组件</h2>
+<ul>
+<li>
+<p><a href="https://kamon.io/">Kamon</a><br>
+一组用于监控运行在 JVM 上的应用的工具和框架，针对 Akka 做了特别支持，Akka 应用只需要做简单的整合就可以对 actor，router 和 dispatcher 进行监控 。Kamon 支持多种 reporter 收集和展示测量值。<br>
+Kamon 的文档质量奇差 x_x，如果想深入了解 Kamon 及各个组件的用法，建议去 <a href="https://github.com/kamon-io/Kamon">Kamon 的 Github</a> 挖。</p>
+</li>
+<li>
+<p><a href="https://prometheus.io/">Prometheus</a><br>
+Prometheus几乎已成为监控领域的事实标准，它自带高效的时序数据库存储，可以让单台Prometheus能够高效的处理大量的数据，可以用来灵活的查询各种监控数据以及配置告警规则，很多没有适配的应用也会有第三方exporter帮它去适配Prometheus，所以监控系统我们首选用Prometheus。</p>
+</li>
+<li>
+<p><a href="https://grafana.com/">Grafana</a><br>
+一个开箱即用的可视化工具，具有功能齐全的度量仪表盘和图形编辑器，有灵活丰富的图形化选项，可以混合多种风格，支持多个数据源。</p>
+</li>
+</ul>
+<h2 id="流程">流程</h2>
+<ul>
+<li>Akka 程序集成 Kamon，程序启动后 Kamon 的 <a href="https://github.com/kamon-io/kamon-prometheus">kamon-prometheus</a>  后端通过 http 协议发布监控数据，Prometheus 定期收集 kamon-prometheus 发布的最新数据，Grafana 负责结果的展示。</li>
+</ul>
+<p><img src="/posts/images/2020-10-11_184457.png" alt="flow"></p>
+<ul>
+<li>Linux 服务器的各项指标由 <a href="https://github.com/prometheus/node_exporter">node_exporter</a> 收集，大致流程同上。</li>
+</ul>
+<h2 id="截图">截图</h2>
+<p><img src="/posts/images/2019-02-14_142746.png" alt="grafana"></p>
+    </section>
+    <footer>
+        <a href='https://oo8a.com/posts/monit_distributed_system/'>More</a>
+    </footer>
+</article>
+
+                        </div>
+                    
+                        <div class="li-article">
+                            <article>
+    <header>
+        <h2><a href="https://oo8a.com/posts/storm2oracle/">亿级数据量分布式入库实践（Oracle） </a></h2>
+        <time class="li-article-date">Sunday, October 11, 2020</time>
+    </header>
+    <section class="li-article-section">
+        <h2 id="需求描述">需求描述</h2>
+<p>某电网公司某网省采集系统，每天早上上班前需要把前一天冻结的电表数据入库完成，入库效率是重要的考核指标。</p>
+<h3 id="数据量">数据量</h3>
+<ul>
+<li>电表数大约 3000 万，需要入库的表有十几个，入库的数据量大约在 2 亿左右。</li>
+<li>除此之外，每小时也有三千万左右的数据需要入库。</li>
+</ul>
+<h3 id="时间限制">时间限制</h3>
+<p>任务高峰在凌晨 1 时 - 5 时（4 小时内）</p>
+<h2 id="架构">架构</h2>
+<h3 id="数据架构图">数据架构图</h3>
+<p><img src="/posts/images/base.png" alt="数据架构图"></p>
+<ul>
+<li>数据采集层：收集各种规约的报文，发送到 Kafka</li>
+<li>数据入库层：接收 Kafka 的报文，解析后入 Oracle，入 Oracle 成功后，入 HBase。由于历史原因，程序用 <a href="https://storm.apache.org/">Apache Storm</a> 编写。</li>
+<li>数据层：会被频繁访问的档案类数据和近 3 个月的量测数据会放在 Oracle，历史数据保存在 HBase。</li>
+<li>数据应用层：基于 HBase 中的数据开展电量计算、漏抄估算、数据挖掘和机器学习等业务</li>
+</ul>
+    </section>
+    <footer>
+        <a href='https://oo8a.com/posts/storm2oracle/'>More</a>
+    </footer>
+</article>
+
+                        </div>
+                    
+                        <div class="li-article">
+                            <article>
+    <header>
+        <h2><a href="https://oo8a.com/posts/json-in-postgresql/">PostgreSQL 里操作 JSON </a></h2>
         <time class="li-article-date">Thursday, September 24, 2020</time>
     </header>
     <section class="li-article-section">
         <h3 id="postgresql-的版本">PostgreSQL 的版本</h3>
-<p>PostgreSQL9.2 开始支持 JSON 类型，但函数不全，不建议使用，9.5 版本加入了 jsonb_set 函数，9.6 版本加入了 jsonb_insert 函数，变更 json 内容变得非常容易，所以建议使用 9.5 以后的版本。</p>
+<p>PostgreSQL 9.2 开始支持 JSON 类型，但函数不全，不建议使用，9.5 版本加入了 jsonb_set 函数，9.6 版本加入了 jsonb_insert 函数，变更 json 内容变得非常容易，所以建议使用 9.5 以后的版本。</p>
 <p><img src="/posts/images/postgresql-logo-1.jpg" alt="PostgreSQL"></p>
     </section>
     <footer>

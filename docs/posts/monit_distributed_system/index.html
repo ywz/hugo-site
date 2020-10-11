@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html xmlns="//www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>分布式程序监控方案 &middot; oo8a</title>
+        <link rel='stylesheet' href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600' type='text/css'>
+        <link rel="stylesheet" href="https://oo8a.com//libraries/normalize.3.0.1.css" />
+        <link rel="stylesheet" href="https://oo8a.com//css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-144-precomposed.png" sizes="144x144" />
+        </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://oo8a.com/">oo8a</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">分布式程序监控方案</h1>
+                        <span class="li-article-taxonomies">
+                            
+
+                            
+                                with tags
+                                
+                                    <a href="https://oo8a.com//tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+                                
+                                    <a href="https://oo8a.com//tags/%E7%9B%91%E6%8E%A7">监控</a>
+                                
+                                    <a href="https://oo8a.com//tags/storm">storm</a>
+                                
+                                    <a href="https://oo8a.com//tags/akka">akka</a>
+                                
+                                    <a href="https://oo8a.com//tags/prometheus">prometheus</a>
+                                
+                                    <a href="https://oo8a.com//tags/grafana">grafana</a>
+                                
+                            
+                        </span>
+                         - 
+                        <time class="li-article-date">Sunday, October 11, 2020</time>
+                    </header>
+                    <section>
+                        <p>为了保证分布式系统的稳定性，可靠性，可运维性。掌控集群的核心性能指标，了解集群的性能表现，了解业务的进展情况，使用监控系统可以帮助我们更快的定位问题和解决问题。在尝试了很多方案后，我们最终选择了 Prometheus + Grafana 作为分布式系统（Akka 或 Storm）的监控方案，下面以 Akka 为例做介绍。</p>
+<h2 id="开源组件">开源组件</h2>
+<ul>
+<li>
+<p><a href="https://kamon.io/">Kamon</a><br>
+一组用于监控运行在 JVM 上的应用的工具和框架，针对 Akka 做了特别支持，Akka 应用只需要做简单的整合就可以对 actor，router 和 dispatcher 进行监控 。Kamon 支持多种 reporter 收集和展示测量值。<br>
+Kamon 的文档质量奇差 x_x，如果想深入了解 Kamon 及各个组件的用法，建议去 <a href="https://github.com/kamon-io/Kamon">Kamon 的 Github</a> 挖。</p>
+</li>
+<li>
+<p><a href="https://prometheus.io/">Prometheus</a><br>
+Prometheus几乎已成为监控领域的事实标准，它自带高效的时序数据库存储，可以让单台Prometheus能够高效的处理大量的数据，可以用来灵活的查询各种监控数据以及配置告警规则，很多没有适配的应用也会有第三方exporter帮它去适配Prometheus，所以监控系统我们首选用Prometheus。</p>
+</li>
+<li>
+<p><a href="https://grafana.com/">Grafana</a><br>
+一个开箱即用的可视化工具，具有功能齐全的度量仪表盘和图形编辑器，有灵活丰富的图形化选项，可以混合多种风格，支持多个数据源。</p>
+</li>
+</ul>
+<h2 id="流程">流程</h2>
+<ul>
+<li>Akka 程序集成 Kamon，程序启动后 Kamon 的 <a href="https://github.com/kamon-io/kamon-prometheus">kamon-prometheus</a>  后端通过 http 协议发布监控数据，Prometheus 定期收集 kamon-prometheus 发布的最新数据，Grafana 负责结果的展示。</li>
+</ul>
+<p><img src="/posts/images/2020-10-11_184457.png" alt="flow"></p>
+<ul>
+<li>Linux 服务器的各项指标由 <a href="https://github.com/prometheus/node_exporter">node_exporter</a> 收集，大致流程同上。</li>
+</ul>
+<h2 id="截图">截图</h2>
+<p><img src="/posts/images/2019-02-14_142746.png" alt="grafana"></p>
+<h2 id="环境要求">环境要求</h2>
+<p>因为 Prometheus 和 Grafana 都由 Go 编写，所以对环境基本没有要求，本文用的是 Centos 7(10.4.43.140)。</p>
+<p><strong>注意：要保证所有服务器时间同步。</strong></p>
+<h2 id="安装-prometheus">安装 Prometheus</h2>
+<p>下载地址: <a href="https://prometheus.io/download/">https://prometheus.io/download/</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#8be9fd;font-style:italic">cd</span> /app
+tar xvf prometheus-2.6.0.linux-amd64.tar.gz
+mv prometheus-2.6.0.linux-amd64 prometheus
+rm prometheus-2.6.0.linux-amd64.tar.gz
+</code></pre></div><h4 id="添加-target">添加 target</h4>
+<p>target 指发布指标数据的 http 服务的地址，添加新 target 后需要重启 Prometheus。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">vim prometheus.yml
+--- 添加 ---
+<span style="color:#ff79c6">scrape_configs</span>:
+  - <span style="color:#ff79c6">job_name</span>: kamon-prometheus
+    <span style="color:#ff79c6">static_configs</span>:
+      - <span style="color:#ff79c6">targets</span>: [<span style="color:#f1fa8c">&#39;localhost:9095&#39;</span>]
+</code></pre></div><h4 id="启动">启动</h4>
+<p>下面是最简单的启动命令，可以利用 <code>systemd</code> 或者 <a href="http://supervisord.org/">supervisord</a> 实现自动启动。下同。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#8be9fd;font-style:italic">cd</span> prometheus/
+nohup ./prometheus --config.file<span style="color:#ff79c6">=</span>prometheus.yml &amp;
+</code></pre></div><h4 id="参考测试用-prometheusyml">参考：测试用 prometheus.yml</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml"><span style="color:#6272a4"># my global config</span>
+<span style="color:#ff79c6">global</span>:
+  <span style="color:#ff79c6">scrape_interval</span>:     15s <span style="color:#6272a4"># Set the scrape interval to every 15 seconds. Default is every 1 minute.</span>
+  <span style="color:#ff79c6">evaluation_interval</span>: 15s <span style="color:#6272a4"># Evaluate rules every 15 seconds. The default is every 1 minute.</span>
+  <span style="color:#6272a4"># scrape_timeout is set to the global default (10s).</span>
+
+<span style="color:#6272a4"># Alertmanager configuration</span>
+<span style="color:#ff79c6">alerting</span>:
+  <span style="color:#ff79c6">alertmanagers</span>:
+  - <span style="color:#ff79c6">static_configs</span>:
+    - <span style="color:#ff79c6">targets</span>:
+      <span style="color:#6272a4"># - alertmanager:9093</span>
+
+<span style="color:#6272a4"># Load rules once and periodically evaluate them according to the global &#39;evaluation_interval&#39;.</span>
+<span style="color:#ff79c6">rule_files</span>:
+  <span style="color:#6272a4"># - &#34;first_rules.yml&#34;</span>
+  <span style="color:#6272a4"># - &#34;second_rules.yml&#34;</span>
+
+<span style="color:#6272a4"># A scrape configuration containing exactly one endpoint to scrape:</span>
+<span style="color:#6272a4"># Here it&#39;s Prometheus itself.</span>
+<span style="color:#ff79c6">scrape_configs</span>:
+  <span style="color:#6272a4"># The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.</span>
+  - <span style="color:#ff79c6">job_name</span>: <span style="color:#f1fa8c">&#39;prometheus&#39;</span>
+
+    <span style="color:#6272a4"># metrics_path defaults to &#39;/metrics&#39;</span>
+    <span style="color:#6272a4"># scheme defaults to &#39;http&#39;.</span>
+
+    <span style="color:#ff79c6">static_configs</span>:
+    - <span style="color:#ff79c6">targets</span>: [<span style="color:#f1fa8c">&#39;localhost:9090&#39;</span>]
+
+  - <span style="color:#ff79c6">job_name</span>: kamon-test
+    <span style="color:#ff79c6">static_configs</span>:
+      - <span style="color:#ff79c6">targets</span>: [<span style="color:#f1fa8c">&#39;10.4.57.33:9095&#39;</span>]
+
+  - <span style="color:#ff79c6">job_name</span>: akka_poc
+    <span style="color:#ff79c6">static_configs</span>:
+      - <span style="color:#ff79c6">targets</span>: [<span style="color:#f1fa8c">&#39;10.4.43.140:9095&#39;</span>,<span style="color:#f1fa8c">&#39;10.4.43.140:9096&#39;</span>,<span style="color:#f1fa8c">&#39;10.4.43.140:9097&#39;</span>,<span style="color:#f1fa8c">&#39;10.4.43.140:9098&#39;</span>]
+
+  - <span style="color:#ff79c6">job_name</span>: <span style="color:#f1fa8c">&#34;node140&#34;</span>
+    <span style="color:#6272a4">#scrape_interval: &#34;15s&#34;</span>
+    <span style="color:#6272a4">#target_groups:</span>
+    <span style="color:#ff79c6">static_configs</span>:
+    - <span style="color:#ff79c6">targets</span>: [<span style="color:#f1fa8c">&#39;10.4.43.140:9100&#39;</span>]
+
+  - <span style="color:#ff79c6">job_name</span>: <span style="color:#f1fa8c">&#34;node141&#34;</span>
+    <span style="color:#ff79c6">static_configs</span>:
+    - <span style="color:#ff79c6">targets</span>: [<span style="color:#f1fa8c">&#39;10.4.43.141:9100&#39;</span>]
+
+</code></pre></div><h2 id="安装-node_exporter">安装 node_exporter</h2>
+<p>node_exporter主要负责监控服务器的硬件指标。<br>
+下载地址: <a href="https://prometheus.io/download/">https://prometheus.io/download/</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#8be9fd;font-style:italic">cd</span> /app
+tar xvf node_exporter-0.17.0.linux-amd64.tar.gz
+mv node_exporter-0.17.0.linux-amd64 node_exporter
+rm node_exporter-0.17.0.linux-amd64.tar.gz
+</code></pre></div><h4 id="启动-1">启动</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#8be9fd;font-style:italic">cd</span> /node_exporter
+nohup ./node_exporter &amp;
+</code></pre></div><h4 id="target">target</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">- <span style="color:#ff79c6">job_name</span>: <span style="color:#f1fa8c">&#34;node141&#34;</span>
+  <span style="color:#ff79c6">static_configs</span>:
+  - <span style="color:#ff79c6">targets</span>: [<span style="color:#f1fa8c">&#39;10.4.43.141:9100&#39;</span>]
+</code></pre></div><h2 id="安装-grafana">安装 Grafana</h2>
+<p>下载地址: <a href="https://grafana.com/grafana/download">https://grafana.com/grafana/download</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#8be9fd;font-style:italic">cd</span> /app
+tar xvf grafana-5.4.2.linux-amd64.tar.gz
+mv grafana-5.4.2 grafana
+rm grafana-5.4.2.linux-amd64.tar.gz
+</code></pre></div><h4 id="启动-2">启动</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#8be9fd;font-style:italic">cd</span> grafana/
+nohup ./grafana-server &amp;
+</code></pre></div><h2 id="整合-kamon">整合 Kamon</h2>
+<h4 id="maven-依赖">Maven 依赖</h4>
+<p>这里列的是全部，用不上的可以去掉。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#6272a4">&lt;!-- kamon --&gt;</span>
+<span style="color:#ff79c6">&lt;dependency&gt;</span>
+    <span style="color:#ff79c6">&lt;groupId&gt;</span>io.kamon<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+    <span style="color:#ff79c6">&lt;artifactId&gt;</span>kamon-prometheus_2.12<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+    <span style="color:#ff79c6">&lt;version&gt;</span>1.1.1<span style="color:#ff79c6">&lt;/version&gt;</span>
+<span style="color:#ff79c6">&lt;/dependency&gt;</span>
+<span style="color:#ff79c6">&lt;dependency&gt;</span>
+    <span style="color:#ff79c6">&lt;groupId&gt;</span>io.kamon<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+    <span style="color:#ff79c6">&lt;artifactId&gt;</span>kamon-zipkin_2.12<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+    <span style="color:#ff79c6">&lt;version&gt;</span>1.0.0<span style="color:#ff79c6">&lt;/version&gt;</span>
+<span style="color:#ff79c6">&lt;/dependency&gt;</span>
+<span style="color:#ff79c6">&lt;dependency&gt;</span>
+    <span style="color:#ff79c6">&lt;groupId&gt;</span>io.kamon<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+    <span style="color:#ff79c6">&lt;artifactId&gt;</span>kamon-akka-remote-2.5_2.12<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+    <span style="color:#ff79c6">&lt;version&gt;</span>1.0.0<span style="color:#ff79c6">&lt;/version&gt;</span>
+<span style="color:#ff79c6">&lt;/dependency&gt;</span>
+<span style="color:#ff79c6">&lt;dependency&gt;</span>
+    <span style="color:#ff79c6">&lt;groupId&gt;</span>io.kamon<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+    <span style="color:#ff79c6">&lt;artifactId&gt;</span>kamon-statsd_2.12<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+    <span style="color:#ff79c6">&lt;version&gt;</span>1.0.0<span style="color:#ff79c6">&lt;/version&gt;</span>
+<span style="color:#ff79c6">&lt;/dependency&gt;</span>
+<span style="color:#ff79c6">&lt;dependency&gt;</span>
+    <span style="color:#ff79c6">&lt;groupId&gt;</span>io.kamon<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+    <span style="color:#ff79c6">&lt;artifactId&gt;</span>kamon-system-metrics_2.12<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+    <span style="color:#ff79c6">&lt;version&gt;</span>1.0.1<span style="color:#ff79c6">&lt;/version&gt;</span>
+<span style="color:#ff79c6">&lt;/dependency&gt;</span>
+<span style="color:#ff79c6">&lt;dependency&gt;</span>
+    <span style="color:#ff79c6">&lt;groupId&gt;</span>org.aspectj<span style="color:#ff79c6">&lt;/groupId&gt;</span>
+    <span style="color:#ff79c6">&lt;artifactId&gt;</span>aspectjweaver<span style="color:#ff79c6">&lt;/artifactId&gt;</span>
+    <span style="color:#ff79c6">&lt;version&gt;</span>1.9.2<span style="color:#ff79c6">&lt;/version&gt;</span>
+<span style="color:#ff79c6">&lt;/dependency&gt;</span>
+</code></pre></div><h4 id="配置">配置</h4>
+<p>修改 kamon.conf，加入下面的内容，根据需求修改。</p>
+<p>filter</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">kamon.util.filters {
+  <span style="color:#ff79c6">&#34;akka.tracked-actor&#34;</span> {
+    includes = [<span style="color:#ff79c6">&#34;**&#34;</span>]
+  }
+
+  <span style="color:#f1fa8c">&#34;akka.tracked-dispatcher&#34;</span> {
+    includes = [<span style="color:#ff79c6">&#34;**&#34;</span>]
+  }
+
+  <span style="color:#f1fa8c">&#34;akka.tracked-router&#34;</span> {
+    includes = [<span style="color:#ff79c6">&#34;**&#34;</span>]
+  }
+
+  <span style="color:#f1fa8c">&#34;akka.traced-actor&#34;</span> {
+    includes = [<span style="color:#ff79c6">&#34;**&#34;</span>]
+  }
+}
+</code></pre></div><p>kamon-prometheus 的配置</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"># ======================================== #
+# kamon-prometheus reference configuration #
+# ======================================== #
+
+kamon.prometheus {
+
+  # Enable or disable publishing the Prometheus scraping enpoint using a embedded server.
+  start-embedded-http-server = yes
+
+  # Enable of disable including tags from kamon.prometheus.environment as labels
+  include-environment-tags = no
+
+  buckets {
+    default-buckets = [
+      10,
+      30,
+      100,
+      300,
+      1000,
+      3000,
+      10000,
+      30000,
+      100000
+    ]
+
+    time-buckets = [
+      0.005,
+      0.01,
+      0.025,
+      0.05,
+      0.075,
+      0.1,
+      0.25,
+      0.5,
+      0.75,
+      1,
+      2.5,
+      5,
+      7.5,
+      10
+    ]
+
+    information-buckets = [
+      512,
+      1024,
+      2048,
+      4096,
+      16384,
+      65536,
+      524288,
+      1048576
+    ]
+
+    # Per metric overrides are possible by specifying the metric name and the histogram buckets here
+    custom {
+      // example:
+      // <span style="color:#ff79c6">&#34;akka.actor.processing-time&#34;</span> = [<span style="color:#bd93f9">0.1</span>, <span style="color:#bd93f9">1.0</span>, <span style="color:#bd93f9">10.0</span>]
+    }
+  }
+
+  embedded-server {
+    # Hostname and port used by the embedded web server to publish the scraping enpoint.
+    hostname = 0.0.0.0
+    port = 9095
+  }
+}
+</code></pre></div><p>9095 是 prometheus 配置里监控的端口号。</p>
+<h4 id="excludes">excludes</h4>
+<p>如果 akka 程序中启动了上万的 actor，Prometheus 会非常卡。<br>
+解决办法：将此 actor 的指标数据从 kamon 排除。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">vim kamon.conf
+---
+<span style="color:#6272a4"># tag:akka-filters:start</span>
+kamon.util.filters {
+
+  <span style="color:#f1fa8c">&#34;akka.tracked-actor&#34;</span> {
+    includes = [ <span style="color:#f1fa8c">&#34;my-app/user/job-manager&#34;</span>, <span style="color:#f1fa8c">&#34;my-app/user/worker-*&#34;</span> ]
+    excludes = [ <span style="color:#f1fa8c">&#34;my-app/system/**&#34;</span>, <span style="color:#f1fa8c">&#34;my-app/user/worker-helper&#34;</span> ]
+  }
+
+  <span style="color:#f1fa8c">&#34;akka.tracked-dispatcher&#34;</span> {
+    includes = [ <span style="color:#f1fa8c">&#34;my-app/akka.actor.default-dispatcher&#34;</span>, <span style="color:#f1fa8c">&#34;my-app/database-dispatcher&#34;</span> ]
+  }
+
+  <span style="color:#f1fa8c">&#34;akka.tracked-router&#34;</span> {
+    includes = [ <span style="color:#f1fa8c">&#34;my-app/user/some-router&#34;</span> ]
+  }
+}
+<span style="color:#6272a4"># tag:akka-filters:end</span>
+
+<span style="color:#6272a4"># tag:akka-actor-groups:start</span>
+kamon {
+  util.filters {
+    <span style="color:#f1fa8c">&#34;worker-actors&#34;</span> {
+      includes = [ <span style="color:#f1fa8c">&#34;my-app/user/worker-*&#34;</span> ]
+    }
+  }
+
+  akka.actor-groups = [ <span style="color:#f1fa8c">&#34;worker-actors&#34;</span> ]
+}
+<span style="color:#6272a4"># tag:akka-actor-groups:end</span>
+
+<span style="color:#6272a4"># tag:akka-message-tracing:start</span>
+kamon.util.filters {
+  <span style="color:#f1fa8c">&#34;akka.traced-actor&#34;</span> {
+    includes = [ <span style="color:#f1fa8c">&#34;my-app/user/job-manager&#34;</span>, <span style="color:#f1fa8c">&#34;my-app/user/worker-*&#34;</span> ]
+    excludes = [ <span style="color:#f1fa8c">&#34;my-app/system/**&#34;</span>, <span style="color:#f1fa8c">&#34;my-app/user/worker-helper&#34;</span> ]
+  }
+}
+<span style="color:#6272a4"># tag:akka-message-tracing:end</span>
+
+kamon.internal-config {
+  akka.loglevel = DEBUG
+}
+
+kamon.akka {
+  ask-pattern-timeout-warning = heavyweight
+}
+</code></pre></div><h4 id="添加-reporter">添加 reporter</h4>
+<p>在 Akka 应用的启动类里，加入下面的 reporter。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#6272a4">// kamon
+</span><span style="color:#6272a4"></span>Config kamonConfig <span style="color:#ff79c6">=</span> ConfigFactory<span style="color:#ff79c6">.</span><span style="color:#50fa7b">load</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;kamon.conf&#34;</span><span style="color:#ff79c6">).</span><span style="color:#50fa7b">withFallback</span><span style="color:#ff79c6">(</span>Kamon<span style="color:#ff79c6">.</span><span style="color:#50fa7b">config</span><span style="color:#ff79c6">());</span>
+Kamon<span style="color:#ff79c6">.</span><span style="color:#50fa7b">reconfigure</span><span style="color:#ff79c6">(</span>kamonConfig<span style="color:#ff79c6">);</span>
+Kamon<span style="color:#ff79c6">.</span><span style="color:#50fa7b">addReporter</span><span style="color:#ff79c6">(</span><span style="color:#ff79c6">new</span> PrometheusReporter<span style="color:#ff79c6">());</span>
+<span style="color:#6272a4">// Kamon.addReporter(new ZipkinReporter());
+</span><span style="color:#6272a4">// Kamon.addReporter(new StatsDReporter());
+</span></code></pre></div><h4 id="配置-aspectj-weaver">配置 AspectJ weaver</h4>
+<p>AspectJ weaver 的<a href="https://search.maven.org/search?q=a:aspectjweaver">下载地址</a>。</p>
+<p>在 Akka 应用的 JVM 的启动参数加入 javaagent。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">-javaagent:path-to-aspectjweaver.jar
+</code></pre></div><h2 id="确认">确认</h2>
+<p>正常启动 Akka 程序，Prometheus，node_exporter，Grafana 后。</p>
+<h4 id="kamon-prometheus">kamon-prometheus</h4>
+<p>用浏览器访问 kamon-prometheus 的 embedded-server (kamon.conf 里配置)，程序启动 60s 后，可以看到指标数据。</p>
+<h4 id="prometheus">Prometheus</h4>
+<p>确认 targets 状态: http://10.4.43.140:9090/targets</p>
+<p>接下来可以用 Prometheus 的搜索功能确认是否已经收到了数据。http://10.4.43.140:9090/graph</p>
+<h2 id="grafana-使用">Grafana 使用</h2>
+<h4 id="访问">访问</h4>
+<p>地址: http://10.4.43.140:3000</p>
+<p>初始用户名密码</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">[security]
+admin_user = admin
+admin_password = admin
+</code></pre></div><h4 id="添加-data-source">添加 data source</h4>
+<p>按照向导，添加刚才启动的 Prometheus。</p>
+<h4 id="添加-dashboard">添加 dashboard</h4>
+<p>文档附带的 json 可以直接导入为 dashboard。</p>
+<ul>
+<li>kamon: kamon_akka_monitor.json</li>
+<li>服务器监控: node_exporter.json</li>
+<li>JVM 监控: bbj_jvm_overview.json</li>
+</ul>
+<h2 id="自定义指标">自定义指标</h2>
+<p>Kamon 提供了自定义指标的接口，可以把我们自己需要监控的指标融合到上面的监控流程。</p>
+<p>例如，统计在线终端数，可以用下面的代码在终端 actor 加入对在线终端数的实时统计。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8be9fd;font-style:italic">private</span> <span style="color:#8be9fd;font-style:italic">final</span> GaugeMetric gaugeMetric <span style="color:#ff79c6">=</span> Kamon<span style="color:#ff79c6">.</span><span style="color:#50fa7b">gauge</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;term_online_gm&#34;</span><span style="color:#ff79c6">);</span>
+
+gaugeMetric<span style="color:#ff79c6">.</span><span style="color:#50fa7b">refine</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;actor_name&#34;</span><span style="color:#ff79c6">,</span> self<span style="color:#ff79c6">().</span><span style="color:#50fa7b">path</span><span style="color:#ff79c6">().</span><span style="color:#50fa7b">name</span><span style="color:#ff79c6">()).</span><span style="color:#50fa7b">set</span><span style="color:#ff79c6">(</span>#current_term_count#<span style="color:#ff79c6">);</span> <span style="color:#6272a4">// 添加到合适的位置
+</span></code></pre></div><p>下面是启动 10 个终端 actor Prometheus 收集到的数据：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">term_online_gm{actor_name=<span style="color:#ff79c6">&#34;$e&#34;</span>} <span style="color:#bd93f9">100.0</span>
+term_online_gm{actor_name=<span style="color:#ff79c6">&#34;$j&#34;</span>} <span style="color:#bd93f9">100.0</span>
+term_online_gm{actor_name=<span style="color:#ff79c6">&#34;$a&#34;</span>} <span style="color:#bd93f9">100.0</span>
+term_online_gm{actor_name=<span style="color:#ff79c6">&#34;$h&#34;</span>} <span style="color:#bd93f9">100.0</span>
+term_online_gm{actor_name=<span style="color:#ff79c6">&#34;$c&#34;</span>} <span style="color:#bd93f9">100.0</span>
+term_online_gm{actor_name=<span style="color:#ff79c6">&#34;$f&#34;</span>} <span style="color:#bd93f9">100.0</span>
+term_online_gm{actor_name=<span style="color:#ff79c6">&#34;$i&#34;</span>} <span style="color:#bd93f9">100.0</span>
+term_online_gm{actor_name=<span style="color:#ff79c6">&#34;$d&#34;</span>} <span style="color:#bd93f9">100.0</span>
+term_online_gm{actor_name=<span style="color:#ff79c6">&#34;$b&#34;</span>} <span style="color:#bd93f9">100.0</span>
+term_online_gm{actor_name=<span style="color:#ff79c6">&#34;$g&#34;</span>} <span style="color:#bd93f9">100.0</span>
+</code></pre></div><p>每个终端 actor 中的在线终端数为 100，在 Grafana 求合得到的在线终端数为 1000。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#f1fa8c">&#34;expr&#34;</span>: <span style="color:#f1fa8c">&#34;sum(term_online_gm)&#34;</span>
+</code></pre></div><p>其它可以用的接口</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#8be9fd;font-style:italic">final</span> Histogram myHistogram <span style="color:#ff79c6">=</span> Kamon<span style="color:#ff79c6">.</span><span style="color:#50fa7b">histogram</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;my.histogram&#34;</span><span style="color:#ff79c6">);</span>
+<span style="color:#8be9fd;font-style:italic">final</span> Counter myCounter <span style="color:#ff79c6">=</span> Kamon<span style="color:#ff79c6">.</span><span style="color:#50fa7b">counter</span><span style="color:#ff79c6">(</span><span style="color:#f1fa8c">&#34;my.counter&#34;</span><span style="color:#ff79c6">);</span>
+
+myHistogram<span style="color:#ff79c6">.</span><span style="color:#50fa7b">record</span><span style="color:#ff79c6">(</span>42<span style="color:#ff79c6">);</span>
+myHistogram<span style="color:#ff79c6">.</span><span style="color:#50fa7b">record</span><span style="color:#ff79c6">(</span>50<span style="color:#ff79c6">);</span>
+myCounter<span style="color:#ff79c6">.</span><span style="color:#50fa7b">increment</span><span style="color:#ff79c6">();</span>
+</code></pre></div><h2 id="jvm-监控">JVM 监控</h2>
+<p>jmx_exporter 的<a href="https://github.com/prometheus/jmx_exporter">下载地址</a></p>
+<p>在 Java 应用的 JVM 的启动参数加入 javaagent。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">java -javaagent:./jmx_prometheus_javaagent-0.11.0.jar<span style="color:#ff79c6">=</span>8080:config.yaml -jar yourJar.jar
+</code></pre></div><h2 id="storm-监控">Storm 监控</h2>
+<p>Storm 的分布式形态与 Akka 不同，Bolt 的位置不固定，无法在<code>prometheus.yml</code>配置，所以要借助 <a href="https://github.com/prometheus/pushgateway">pushgateway</a> 服务做一下中转，并且把 Akka 方案中的 Kamon 替换为 pushgateway 的 <a href="https://github.com/prometheus/client_java/tree/master/simpleclient_pushgateway">client_java</a>，其它组件安装和使1使用可以参考 Akka 方案。</p>
+<p><img src="/posts/images/2020-10-11_185833.png" alt="storm"></p>
+<h2 id="附">附</h2>
+<ul>
+<li><a href="http://docs.grafana.org/guides/getting_started/">Grafana Getting started</a></li>
+<li><a href="https://prometheus.io/docs/prometheus/latest/querying/basics/">Querying Prometheus</a></li>
+</ul>
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>wz</strong>
+    </div>
+</div>
+
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        Older article<br />
+                        <a href="https://oo8a.com/posts/storm2oracle/"> 亿级数据量分布式入库实践（Oracle）</a>
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        &nbsp;
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    
+                    &copy; 2020   版权所有 
+                </div>
+                <div class="li-page-footer-theme">
+                    
+					<span class="">本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可。</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    <!--
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+

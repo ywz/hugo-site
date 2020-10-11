@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>监控 on oo8a</title>
+    <link>https://oo8a.com/tags/%E7%9B%91%E6%8E%A7/</link>
+    <description>Recent content in 监控 on oo8a</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <copyright>本作品采用知识共享署名-非商业性使用 4.0 国际许可协议&lt;/a&gt;进行许可。</copyright>
+    <lastBuildDate>Sun, 11 Oct 2020 20:06:56 +0800</lastBuildDate>
+    
+	<atom:link href="https://oo8a.com/tags/%E7%9B%91%E6%8E%A7/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>分布式程序监控方案</title>
+      <link>https://oo8a.com/posts/monit_distributed_system/</link>
+      <pubDate>Sun, 11 Oct 2020 20:06:56 +0800</pubDate>
+      
+      <guid>https://oo8a.com/posts/monit_distributed_system/</guid>
+      <description>&lt;p&gt;为了保证分布式系统的稳定性，可靠性，可运维性。掌控集群的核心性能指标，了解集群的性能表现，了解业务的进展情况，使用监控系统可以帮助我们更快的定位问题和解决问题。在尝试了很多方案后，我们最终选择了 Prometheus + Grafana 作为分布式系统（Akka 或 Storm）的监控方案，下面以 Akka 为例做介绍。&lt;/p&gt;
+&lt;h2 id=&#34;开源组件&#34;&gt;开源组件&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://kamon.io/&#34;&gt;Kamon&lt;/a&gt;&lt;br&gt;
+一组用于监控运行在 JVM 上的应用的工具和框架，针对 Akka 做了特别支持，Akka 应用只需要做简单的整合就可以对 actor，router 和 dispatcher 进行监控 。Kamon 支持多种 reporter 收集和展示测量值。&lt;br&gt;
+Kamon 的文档质量奇差 x_x，如果想深入了解 Kamon 及各个组件的用法，建议去 &lt;a href=&#34;https://github.com/kamon-io/Kamon&#34;&gt;Kamon 的 Github&lt;/a&gt; 挖。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://prometheus.io/&#34;&gt;Prometheus&lt;/a&gt;&lt;br&gt;
+Prometheus几乎已成为监控领域的事实标准，它自带高效的时序数据库存储，可以让单台Prometheus能够高效的处理大量的数据，可以用来灵活的查询各种监控数据以及配置告警规则，很多没有适配的应用也会有第三方exporter帮它去适配Prometheus，所以监控系统我们首选用Prometheus。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://grafana.com/&#34;&gt;Grafana&lt;/a&gt;&lt;br&gt;
+一个开箱即用的可视化工具，具有功能齐全的度量仪表盘和图形编辑器，有灵活丰富的图形化选项，可以混合多种风格，支持多个数据源。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;流程&#34;&gt;流程&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Akka 程序集成 Kamon，程序启动后 Kamon 的 &lt;a href=&#34;https://github.com/kamon-io/kamon-prometheus&#34;&gt;kamon-prometheus&lt;/a&gt;  后端通过 http 协议发布监控数据，Prometheus 定期收集 kamon-prometheus 发布的最新数据，Grafana 负责结果的展示。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://oo8a.com/posts/images/2020-10-11_184457.png&#34; alt=&#34;flow&#34;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Linux 服务器的各项指标由 &lt;a href=&#34;https://github.com/prometheus/node_exporter&#34;&gt;node_exporter&lt;/a&gt; 收集，大致流程同上。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;截图&#34;&gt;截图&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&#34;https://oo8a.com/posts/images/2019-02-14_142746.png&#34; alt=&#34;grafana&#34;&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

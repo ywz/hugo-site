@@ -13,13 +13,13 @@
     
     
     <item>
-      <title>JSON 格式在 PostgreSQL 里的应用</title>
+      <title>PostgreSQL 里操作 JSON</title>
       <link>https://oo8a.com/posts/json-in-postgresql/</link>
       <pubDate>Thu, 24 Sep 2020 22:04:56 +0800</pubDate>
       
       <guid>https://oo8a.com/posts/json-in-postgresql/</guid>
       <description>&lt;h3 id=&#34;postgresql-的版本&#34;&gt;PostgreSQL 的版本&lt;/h3&gt;
-&lt;p&gt;PostgreSQL9.2 开始支持 JSON 类型，但函数不全，不建议使用，9.5 版本加入了 jsonb_set 函数，9.6 版本加入了 jsonb_insert 函数，变更 json 内容变得非常容易，所以建议使用 9.5 以后的版本。&lt;/p&gt;
+&lt;p&gt;PostgreSQL 9.2 开始支持 JSON 类型，但函数不全，不建议使用，9.5 版本加入了 jsonb_set 函数，9.6 版本加入了 jsonb_insert 函数，变更 json 内容变得非常容易，所以建议使用 9.5 以后的版本。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://oo8a.com/posts/images/postgresql-logo-1.jpg&#34; alt=&#34;PostgreSQL&#34;&gt;&lt;/p&gt;</description>
     </item>
     

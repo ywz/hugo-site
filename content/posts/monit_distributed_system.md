@@ -1,7 +1,7 @@
 ---
 title: "分布式程序监控方案"
 date: 2020-10-11T20:06:56+08:00
-tags: [分布式,监控,storm,akka,prometheus,grafana]
+tags: [distribeted,storm,akka,prometheus,grafana]
 ---
 为了保证分布式系统的稳定性，可靠性，可运维性。掌控集群的核心性能指标，了解集群的性能表现，了解业务的进展情况，使用监控系统可以帮助我们更快的定位问题和解决问题。在尝试了很多方案后，我们最终选择了 Prometheus + Grafana 作为分布式系统（Akka 或 Storm）的监控方案，下面以 Akka 为例做介绍。
 

@@ -102,8 +102,8 @@
 <p>程序接收到的报文为 JSON 格式，报文种类有 100 多种，接收到报文以后要判断报文种类，并针对报文种类进行解析，如果有每条报文解析需要 1 毫秒，2 亿条报文解析需要 55.6 小时，离期待的速度相差很远，所以解析速度最好要达到每毫秒 20 条以上。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">200000000/1000/60/60 = 55.6 小时
 ms        s    m  h
-</code></pre></div><h4 id="应对方案">应对方案</h4>
-<p>报文解析没有用代码解析，而是做成配置（存到 Oracle），用到了开源的 <a href="https://github.com/json-path/JsonPath">json-path</a> 工具，每种报文有一条对应的配置，直接通过 JSON 路径可以获取报文里的值，这样做的好处。</p>
+</code></pre></div><p>应对方案：<br>
+报文解析没有用代码解析，而是做成配置（存到 Oracle），用到了开源的 <a href="https://github.com/json-path/JsonPath">json-path</a> 工具，每种报文有一条对应的配置，直接通过 JSON 路径可以获取报文里的值，这样做的好处。</p>
 <ol>
 <li>应用更加灵活，支持新报文只需要加一条配置</li>
 <li>程序可复用性高</li>
@@ -112,7 +112,7 @@ ms        s    m  h
 <p>同时因为使用了分布式程序，解析处理可以分摊给 N 台机器，利用并行处理来提高解析效率。</p>
 <h3 id="阻塞">阻塞</h3>
 <p>初版程序使用了 Storm 的 Ack 机制，如果有入库行为发生失败(fail)，会触发重试，导致这以后的数据都无法被处理。</p>
-<h4 id="应对方案-1">应对方案</h4>
+<p>应对方案：</p>
 <ol>
 <li>关闭 Storm 的 Ack 功能，表之间的入库不会相互影响。</li>
 <li>入库批处理增加超时时间，提交超时程序可以继续执行。</li>
@@ -149,7 +149,7 @@ ms        s    m  h
 <span style="color:#ff79c6">}</span>
 </code></pre></div><h3 id="锁表">锁表</h3>
 <p>入库报文的种类有上百种之多，初版程序针对每一种报文类型，都有自己的入库 SQL 文，所以进程间对同一条数据的入库操作容易触发行锁。</p>
-<h4 id="应对方案-2">应对方案</h4>
+<p>应对方案：</p>
 <ol>
 <li>改进 Storm 的分组策略自己编写自定义分组（<a href="https://storm.apache.org/releases/2.1.0/javadocs/org/apache/storm/grouping/CustomStreamGrouping.html">CustomStreamGrouping</a>），保证同一张表的同一条数据的所有入库 SQL 在一个线程进行。</li>
 <li>改进配置结构，针对同一个表的所有入库操作都尽量使用同一个 SQL 提交。（如下图）<br>
@@ -157,21 +157,21 @@ ms        s    m  h
 </ol>
 <h3 id="批量入库失败">批量入库失败</h3>
 <p>为了提高效率，Oracle 入库时采用批量提交，所以同一批次如果有一条失败，会导致该批次全部数据入库失败。</p>
-<h4 id="应对方案-3">应对方案</h4>
-<p><img src="/posts/images/retry.png" alt="重试"><br>
+<p>应对方案：<br>
+<img src="/posts/images/retry.png" alt="重试"><br>
 批量提交失败后，会触发逐条重试，重试入库再次失败的数据会记录到【失败记录表】。</p>
 <h3 id="redis">Redis</h3>
 <p>每条报文对应的档案信息需要从 Redis 获取，每次 Redis io 需要零点几毫秒到几毫秒不等，所以每收到一条报文访问一次 Redis 显然行不通。</p>
-<h4 id="应对方案-4">应对方案</h4>
-<p>解析 Bolt 接收到报文不会马上解析，满足下面两个条件才会开始批量解析，集中利用资源减少 IO 次数可以大幅提升解析效率。</p>
+<p>应对方案：<br>
+解析 Bolt 接收到报文不会马上解析，满足下面两个条件才会开始批量解析，集中利用资源减少 IO 次数可以大幅提升解析效率。</p>
 <ol>
 <li>满足约定数量会触发批量处理。</li>
 <li>如果长时间没有接收到新报文，无法满足约定数量，到达约定时间后也会触发批量处理。</li>
 </ol>
 <h3 id="序列化">序列化</h3>
 <p>由于 Storm 的 Spout 和 Bolt、Bolt 和 Bolt 间的消息传输需要对消息做序列化，初版程序消息体积比较大，会有资源占用高的问题。</p>
-<h4 id="应对方案-5">应对方案</h4>
-<p>减小序列化对象的体积。</p>
+<p>应对方案：<br>
+减小序列化对象的体积。</p>
 <h3 id="oracle">Oracle</h3>
 <p>针对 Oracle 的优化如下。</p>
 <ol>

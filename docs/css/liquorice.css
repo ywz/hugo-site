@@ -52,6 +52,7 @@ pre {
 
 pre code {
     display: inline-block;
+    font-family: "Roboto Mono", Consolas, monospace;
 }
 
 /** Screen furniture ********************************************************/

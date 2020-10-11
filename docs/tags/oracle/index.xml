@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <copyright>本作品采用知识共享署名-非商业性使用 4.0 国际许可协议&lt;/a&gt;进行许可。</copyright>
-    <lastBuildDate>Sun, 11 Oct 2020 19:36:56 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 11 Oct 2020 19:36:12 +0800</lastBuildDate>
     
 	<atom:link href="https://oo8a.com/tags/oracle/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,7 +15,7 @@
     <item>
       <title>亿级数据量分布式入库实践（Oracle）</title>
       <link>https://oo8a.com/posts/storm2oracle/</link>
-      <pubDate>Sun, 11 Oct 2020 19:36:56 +0800</pubDate>
+      <pubDate>Sun, 11 Oct 2020 19:36:12 +0800</pubDate>
       
       <guid>https://oo8a.com/posts/storm2oracle/</guid>
       <description>&lt;h2 id=&#34;需求描述&#34;&gt;需求描述&lt;/h2&gt;

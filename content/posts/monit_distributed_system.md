@@ -22,11 +22,11 @@ Prometheus几乎已成为监控领域的事实标准，它自带高效的时序�
 ![flow](/posts/images/2020-10-11_184457.png)
 
 - Linux 服务器的各项指标由 [node_exporter](https://github.com/prometheus/node_exporter) 收集，大致流程同上。
-
+<!--more-->
 
 ## 截图
 ![grafana](/posts/images/2019-02-14_142746.png)
-<!--more-->
+
 
 ## 环境要求
 因为 Prometheus 和 Grafana 都由 Go 编写，所以对环境基本没有要求。

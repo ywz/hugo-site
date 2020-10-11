@@ -42,9 +42,7 @@ Prometheus几乎已成为监控领域的事实标准，它自带高效的时序�
 &lt;p&gt;&lt;img src=&#34;https://oo8a.com/posts/images/2020-10-11_184457.png&#34; alt=&#34;flow&#34;&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Linux 服务器的各项指标由 &lt;a href=&#34;https://github.com/prometheus/node_exporter&#34;&gt;node_exporter&lt;/a&gt; 收集，大致流程同上。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;截图&#34;&gt;截图&lt;/h2&gt;
-&lt;p&gt;&lt;img src=&#34;https://oo8a.com/posts/images/2019-02-14_142746.png&#34; alt=&#34;grafana&#34;&gt;&lt;/p&gt;</description>
+&lt;/ul&gt;</description>
     </item>
     
   </channel>

@@ -38,7 +38,7 @@ tags: [分布式,storm,akka,oracle,性能]
 ms        s    m  h
 ```
 
-#### 应对方案  
+应对方案：  
 报文解析没有用代码解析，而是做成配置（存到 Oracle），用到了开源的 [json-path](https://github.com/json-path/JsonPath) 工具，每种报文有一条对应的配置，直接通过 JSON 路径可以获取报文里的值，这样做的好处。
 
 1. 应用更加灵活，支持新报文只需要加一条配置
@@ -51,7 +51,7 @@ ms        s    m  h
 ### 阻塞
 初版程序使用了 Storm 的 Ack 机制，如果有入库行为发生失败(fail)，会触发重试，导致这以后的数据都无法被处理。
 
-#### 应对方案  
+应对方案：  
 1. 关闭 Storm 的 Ack 功能，表之间的入库不会相互影响。
 2. 入库批处理增加超时时间，提交超时程序可以继续执行。
 ``` java
@@ -90,7 +90,7 @@ public interface Statement extends Wrapper, AutoCloseable {
 ### 锁表
 入库报文的种类有上百种之多，初版程序针对每一种报文类型，都有自己的入库 SQL 文，所以进程间对同一条数据的入库操作容易触发行锁。
 
-#### 应对方案
+应对方案：  
 1. 改进 Storm 的分组策略自己编写自定义分组（[CustomStreamGrouping](https://storm.apache.org/releases/2.1.0/javadocs/org/apache/storm/grouping/CustomStreamGrouping.html)），保证同一张表的同一条数据的所有入库 SQL 在一个线程进行。
 2. 改进配置结构，针对同一个表的所有入库操作都尽量使用同一个 SQL 提交。（如下图）  
 ![锁表](/posts/images/sql.png)
@@ -98,14 +98,14 @@ public interface Statement extends Wrapper, AutoCloseable {
 ### 批量入库失败
 为了提高效率，Oracle 入库时采用批量提交，所以同一批次如果有一条失败，会导致该批次全部数据入库失败。
 
-#### 应对方案
+应对方案：  
 ![重试](/posts/images/retry.png)  
 批量提交失败后，会触发逐条重试，重试入库再次失败的数据会记录到【失败记录表】。
 
 ### Redis
 每条报文对应的档案信息需要从 Redis 获取，每次 Redis io 需要零点几毫秒到几毫秒不等，所以每收到一条报文访问一次 Redis 显然行不通。
 
-#### 应对方案
+应对方案：  
 解析 Bolt 接收到报文不会马上解析，满足下面两个条件才会开始批量解析，集中利用资源减少 IO 次数可以大幅提升解析效率。
 1. 满足约定数量会触发批量处理。
 2. 如果长时间没有接收到新报文，无法满足约定数量，到达约定时间后也会触发批量处理。
@@ -113,7 +113,7 @@ public interface Statement extends Wrapper, AutoCloseable {
 ### 序列化
 由于 Storm 的 Spout 和 Bolt、Bolt 和 Bolt 间的消息传输需要对消息做序列化，初版程序消息体积比较大，会有资源占用高的问题。
 
-#### 应对方案
+应对方案：  
 减小序列化对象的体积。
 
 ### Oracle

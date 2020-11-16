@@ -20,6 +20,24 @@ Dism /online /enable-feature /featurename:Microsoft-Hyper-V-All /LimitAccess /AL
 ## 安装 Ubuntu 20.04
 唯一需要注意的在`指定代数`中选择`第一代(1)`。  
 
+## 联网
+没有完美方案，建议在宿主机搭一个 http 代理。
+``` text
+$ sudo apt update
+$ sudo apt upgrade
+$ sudo apt install proxychains-ng
+$ sudo vim /etc/proxychains4.conf
+---
++ http    192.168.1.3 8001
+---
+$ vim ~/.zshrc
+---
++ alias pr='proxychains4'
+---
+$ pr curl google.com
+$ sudo apt clean
+```
+
 ## 网络配置（访问外网）
 安装完成后 Hyper-V 会自动创建默认的 switch `vEthernet (Default Switch)`。  
 `控制面板\网络和 Internet\网络连接` -> WLAN（联网的那个网卡）右键 -> 属性 -> 共享

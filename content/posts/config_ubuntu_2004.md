@@ -42,6 +42,7 @@ https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/
 ``` shell
 $ sudo apt update
 $ sudo apt upgrade
+$ sudo apt clean
 ```
 
 ### 安装软件

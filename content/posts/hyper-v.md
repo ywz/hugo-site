@@ -16,6 +16,7 @@ Dism /online /enable-feature /featurename:Microsoft-Hyper-V-All /LimitAccess /AL
 ```
 以管理员身份运行，重启后验证是否安装成功。
 
+<!--more-->
 ## 安装 Ubuntu 20.04
 唯一需要注意的在`指定代数`中选择`第一代(1)`。  
 
